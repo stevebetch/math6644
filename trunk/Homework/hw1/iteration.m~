@@ -1,0 +1,30 @@
+function [ out ] = iteration( A )
+%ITERATION Summary of this function goes here
+%   Detailed explanation goes here
+
+itlimit=1000;
+a=0;
+
+M=diag(diag(A));
+N=M-A;
+
+G=M^-1*N;
+x0=[0;0;0];
+c0=[0;0;0];
+b=[3;4;5];
+while (1)
+    a=a+1;
+    x1=G*x0+c0;
+    
+    diff=x1-x0;
+    
+    if(diff<0.000001 || a>itlimit)
+        
+       break;
+    end
+    x0=x1;
+    c=M^-1*b;
+end
+
+end
+
