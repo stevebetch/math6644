@@ -190,7 +190,7 @@ The G-J method was run with a number of different convergence criteria to demons
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=130mm]{gj.png}
+\includegraphics[width=140mm]{gj.png}
 \caption{Convergence of the G-J method.}
 \label{gj}
 \end{center}
@@ -203,16 +203,45 @@ $$
 The G-S algorithm can also be quite quickly implemented in just a few lines in Matlab, using Matlab's vector notation. Notably, precomputing the values of $(D-E)^{-1}F$ and $(D-F)^{-1}\vec{b}$ greatly speedup the runtime of the algorithm, as these values are invariant. The implementation used for this problem is shown below.
 \lstinputlisting{GS.m}
 
-The G-S method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gs} shows these convergence values. The chart also compares the relative performance of the G-J and G-S methods. As can be seen, the G-S method 
+The G-S method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gs} shows these convergence values. The chart also compares the relative performance of the G-J and G-S methods. As can be seen, the G-S method converges much quicker than the G-J method as the constraints on convergence are tightened. 
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=130mm]{gs.png}
+\includegraphics[width=140mm]{gs.png}
 \caption{Convergence of the G-S method compared to the G-J method.}
 \label{gs}
 \end{center}
 \end{figure}
+\newpage
+The final method that was implemented was the Selective Over Relaxation (SOR) method. The SOR method is a variant of the Gauss-Seidel method that uses a relaxation parameter, $\omega$, to converge on the solution more efficiently. If $\omega=1$, this method behaves exactly the same as the Gauss-Seidel method. In fact, the code to generate the SOR method is nearly identical to that of the G-S method, except for the addition of one line:
 
+lstinputlisting{SOR.m}
+
+As can be seen in the SOR code, the 
+
+The choice of the $\omega$ parameter is critical for this method to work effectively.  For this particular problem, $\omega$ values greater than 1.55 would result in the algorithm taking orders of magnitude longer to converge than the G-J or G-S methods. The optimal value of $\omega$ is defined as:
+
+$$ \omega_{opt}=\frac{2}{1+\sqrt{1-\rho(B)^2}}
+$$
+where $B=D^{-1}(E+F)$ and $\rho(B)$ is the spectral radius of $B$. For this discretized ODE, this value sits at $\approx 1.49375$. The effect of the $\omega$ on the convergence of the SOR method can be seen in Figure \ref{omega}.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=140mm]{omega.png}
+\caption{Number of iterations necessary to converge to $10^{-8}$ vs $\omega$. The effects of $\omega$ on run length can clearly be seen. }
+\label{omega}
+\end{center}
+\end{figure}
+
+Using the optimal value of $\omega=1.49375$, the SOR method was compared to the G-S and G-J methods, as seen in Figure \ref{sor}. The SOR method is able to converge to a given solution in fewer iterations than either the G-J or G-S methods, due completely to the relaxation parameter. 
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=140mm]{sor.png}
+\caption{Number of iterations necessary to converge to $10^{-8}$ vs $\omega$. The effects of $\omega$ on run length can clearly be seen. }
+\label{sor}
+\end{center}
+\end{figure}
 %\begin{figure}[htbp]
 %\begin{center}
 %\begin{tabular}{ | l | c|c| c| c | c | c| c| c| c  | c | }
