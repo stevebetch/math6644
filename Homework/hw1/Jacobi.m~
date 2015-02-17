@@ -1,0 +1,8 @@
+function [ x ] = Jacobi( A,b,maxIt,minError )
+%JACOBI Custom implementation of the jacobi method
+%   This function takes in the A matrix, the b vector, the maximum number
+%   of iteration
+
+
+end
+

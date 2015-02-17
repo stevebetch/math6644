@@ -176,8 +176,42 @@ u_{n-1}
   $ 
   \end{center}
 
-where $h=\frac{1}{n}$. This discretized ODE was then solved using the Jacobi, Gauss-Seidel, and SOR with $n=1000$. 
+where $h=\frac{1}{n}$. This discretized ODE was then solved using the Gauss-Jacobi , Gauss-Seidel, and SOR with $n=1000$. 
 
+The A matrix as well as the b and u vectors were created with the following code:
+\lstinputlisting{SetupProb5.m}
+
+The first algorithm tested was the Gauss-Jacobi method. This is the simplest algorithm to implement and has a simple iteration. The G-J method is computed by the equation: 
+$$x_i^{(k+1)}=\frac{1}{a_{ii}}\bigg(b_i+\sum\limits_{\substack{j=1\\ j\ne i}}^n a_{ij}x_j^{(k)}\bigg) \ \ \ \ \ \ \ \ i=1:n
+$$
+The G-J algorithm can quickly be implemented in just a few lines in Matlab, using Matlab's vector notation. The implementation used for this problem is shown below.
+\lstinputlisting{Jacobi.m}
+The G-J method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gj} shows these convergence values.
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=130mm]{gj.png}
+\caption{Convergence of the G-J method.}
+\label{gj}
+\end{center}
+\end{figure}
+
+The second algoritm implemented was the Gauss-Seidel method. The G-S method splits the A matrix into the D, E, and F subparts. The D matrix contains all of the diagonal elements of A. The E and F matrices are the upper and lower triangular matrices, respectively, of A. The G-S algorithm then computes the following iteration:
+
+$$ \vec{x}^{\ (k+1)}=(D-E)^{-1}F\vec{x}^{\ (k)}+(D-F)^{-1}\vec{b}
+$$
+The G-S algorithm can also be quite quickly implemented in just a few lines in Matlab, using Matlab's vector notation. Notably, precomputing the values of $(D-E)^{-1}F$ and $(D-F)^{-1}\vec{b}$ greatly speedup the runtime of the algorithm, as these values are invariant. The implementation used for this problem is shown below.
+\lstinputlisting{GS.m}
+
+The G-S method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gs} shows these convergence values. The chart also compares the relative performance of the G-J and G-S methods. As can be seen, the G-S method 
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=130mm]{gs.png}
+\caption{Convergence of the G-J method.}
+\label{gs}
+\end{center}
+\end{figure}
 
 %\begin{figure}[htbp]
 %\begin{center}
