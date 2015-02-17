@@ -19,17 +19,13 @@ while(1)
     count=count+1;
     xgs=deinv*x0+dfinv;
     x=w*xgs+(1-w)*x0;
-%     if(mod(count,1000)==0)
-%         disp('debug check')
-%           find((abs(x-x0)<mindiff)==0)
-%          
-%     end
+
     if((abs(x-x0)<mindiff))
 
         break;
     end
     
-    if(count>100000)
+    if(count>10000000)
        break;
     end
 
