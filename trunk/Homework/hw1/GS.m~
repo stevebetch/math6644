@@ -1,4 +1,8 @@
-function [ x,count ] = Jacobi( A,b,mindiff )
+function [ output_args ] = GS( input_args )
+%GS Custom implementation of the Sidel method
+%   Detailed explanation goes here
+
+function [ x,count ] = Jacobi( A,b,maxIt,mindiff )
 %JACOBI Custom implementation of the jacobi method
 %   This function takes in the A matrix, the b vector, the maximum number
 %   of iterations, and the minimum error. returns the x values.
@@ -8,7 +12,7 @@ end
 
 count=0;
 x0=zeros(size(b));
-while(1)
+while(count<maxIt)
     count=count+1;
     x=(b-A*x0+(diag(A).*x0))./diag(A);
     
@@ -22,4 +26,5 @@ end
 
 end
 
+end
 
