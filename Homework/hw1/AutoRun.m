@@ -17,29 +17,34 @@ close(h);
 figure1 = figure('Name','Convergence Criteria vs Number of iterations');
 
 % Create axes
-axes1 = axes('Parent',figure1,'YMinorTick','on','XMinorTick','on',...
+axes1 = axes('Parent',figure1,'YGrid','on','XGrid','on','YMinorTick','on',...
+    'XMinorTick','on',...
     'XScale','log',...
     'XDir','reverse');
 box(axes1,'on');
 hold(axes1,'on');
 
 % Create ylabel
-ylabel('Number of iterations required to meet convergence criteria');
+ylabel('Number of iterations required to meet convergence criteria',...
+    'FontSize',16,...
+    'Interpreter','latex');
 
 % Create xlabel
-xlabel('Convergence Criteria');
+xlabel('Convergence Criteria','FontSize',16,'Interpreter','latex');
 
 % Create title
-title('Convergence Criteria vs Number of iterations');
+title('Convergence Criteria vs Number of iterations','FontSize',16,'Interpreter','latex');
 
 % Create semilogx
-semilogx(val,countJ,'Color',[0 0 1]);
+p1=semilogx(val,countJ,'Color',[0 0 1]);
+set(p1,'DisplayName','Gauss-Jacobi Method','Color',[0 0 1]);
 hold on;
-semilogx(val,countGS,'g');
-semilogx(val,countSOR2,'r');
-set(semilogx1(1),'DisplayName','Gauss-Jacobi Method','Color',[0 0 1]);
-set(semilogx1(2),'DisplayName','Gauss-Seidel Method','Color',[0 1 0]);
-set(semilogx1(2),'DisplayName','SOR Method with \omega =1.49375','Color',[1 0 0]);
+p2=semilogx(val,countGS,'g');
+set(p2,'DisplayName','Gauss-Seidel Method','Color',[0 1 0]);
+p3=semilogx(val,countSOR2,'r');
+
+
+set(p3,'DisplayName','SOR Method with \omega =1.49375','Color',[1 0 0]);
 % Create legend
 legend1 = legend(axes1,'show');
 set(legend1,'FontSize',14);
