@@ -1,6 +1,6 @@
 \documentclass[11pt, oneside,table]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
 %\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
-\usepackage[margin=.7in]{geometry}
+\usepackage[margin=.9in]{geometry}
 \geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
 %\geometry{landscape}                		% Activate for for rotated page geometry
 \usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
@@ -87,7 +87,7 @@ Thus, the matrix expression for the symmetric G-S iterations is:
 \section*{Question 3}
 {\it Assume A is a n$\times$n symmetric positive definite matrix with all eigenvalues in the intervals (1; 1.1) $\cup$ (10; 10.2). Assume that the cost of a matrix vector multiplication is about 4$n$ floating point multiplications. Estimate the number of floating point operations reduce the A-norm of the error by a factor of $10^{-3}$ using CG iterations.}\newline
 
-Because the n$\times$n A matrix is symmetric positive definite, convergence can be guaranteed for the Conjugate Gradient(CG) method. This allows an upper limit on the number of floating point operations (FLOPS) to be calculated. This upper bound will be dependent on the theoretical convergence rate of the CG method. The analysis of the CG method assumes that variable assignment and vector addition/subtraction can occur in \bigo(1) or constant time. This is theoretically possible on vector machines. The analysis also assumes that 'vector devision' (i.e. the computation of the $\alpha$ and $\beta$ values) can also be completed in \bigo(4n). The breakdown of the FLOPS cost per step of the CG method is below:
+Because the n$\times$n A matrix is symmetric positive definite, convergence can be guaranteed for the Conjugate Gradient(CG) method. This allows an upper limit on the number of floating point operations (FLOPS) to be calculated. This upper bound will be dependent on the theoretical convergence rate of the CG method. The analysis of the CG method assumes that variable assignment and vector addition/subtraction can occur in \bigo(1) or constant time. This is theoretically possible on vector machines. The analysis also assumes that 'vector devision' and vector multiplication (i.e. the computation of the $\alpha$ and $\beta$ values) can be completed in \bigo(n). The breakdown of the FLOPS cost per step of the CG method is below:
 
 
 \begin{align*}
@@ -96,18 +96,18 @@ Because the n$\times$n A matrix is symmetric positive definite, convergence can 
 for\ i &= 1:k\ & k\ iterations \\
 \{\\
 \vec{q}^{\ (k-1)}&=A\vec{p}^{\ (k-1)} & 4n\ FLOPS \\
-\alpha_{k-1}&=\frac{<\vec{r}^{\ (k-1)},\vec{r}^{\ (k-1)}>}{<\vec{p}^{\ (k-1)},\vec{q}>} & 8n\ FLOPS\ total \\
-\vec{x}^{\ (k)} &= \vec{x}^{\ (k-1)} + \alpha_{k-1}\vec{p}^{\ (k-1)} &  4n\ FLOPS\\
-\vec{r}^{\ (k)} &= \vec{r}^{\ (k-1)} - \alpha_{k-1}\vec{q} &  4n\ FLOPS\\
-\beta_{k-1}&=\frac{<\vec{r}^{\ (k)},\vec{r}^{\ (k)}>}{<\vec{r}^{\ (k-1)},\vec{r}^{\ (k-1)}>} & 8n\ FLOPS\ total \\
+\alpha_{k-1}&=\frac{<\vec{r}^{\ (k-1)},\vec{r}^{\ (k-1)}>}{<\vec{p}^{\ (k-1)},\vec{q}>} & 3n\ FLOPS\ total \\
+\vec{x}^{\ (k)} &= \vec{x}^{\ (k-1)} + \alpha_{k-1}\vec{p}^{\ (k-1)} &  n\ FLOPS\\
+\vec{r}^{\ (k)} &= \vec{r}^{\ (k-1)} - \alpha_{k-1}\vec{q} &  n\ FLOPS\\
+\beta_{k-1}&=\frac{<\vec{r}^{\ (k)},\vec{r}^{\ (k)}>}{<\vec{r}^{\ (k-1)},\vec{r}^{\ (k-1)}>} & 3n\ FLOPS\ total \\
 \vec{p}^{\ (k)} &= \vec{r}^{\ (k)} + \beta_{k-1}\vec{p}^{\ (k-1)} &  4n\ FLOPS\\
 \}
 \end{align*}
 
-Thus it takes \bigo(36n) FLOPS to complete one iteration. The error equation is given by:
+Thus it takes \bigo(5n) to setup the problem and \bigo(16n) FLOPS to complete one iteration. The error equation is given by:
 $$ ||\vec{e}^{\ (k+1)}||_A \le \Bigg(\frac{\sqrt{\kappa(A)}-1}{\sqrt{\kappa(A)}+1}\Bigg)||\vec{e}^{\ (k)}||_A
 $$
-For this problem, $\kappa(A)=\frac{10.2}{1.1}= 9.\overline{2727}$. By the error equation above, for each iteration, the error will be reduced by $\Bigg(\frac{\sqrt{9.\overline{2727}}-1}{\sqrt{9.\overline{2727}}+1}\Bigg)\approx 0.5056$. As a result, after 10 iterations, the error will be reduced by $\approx 10^{-3}$. Thus, the number of FLOPS to reduce the A-norm of the error by a factor of $10^{-3}$ is \bigo(360n).
+For this problem, $\kappa(A)=\frac{10.2}{1.1}= 9.\overline{2727}$. By the error equation above, for each iteration, the error will be reduced by $\Bigg(\frac{\sqrt{9.\overline{2727}}-1}{\sqrt{9.\overline{2727}}+1}\Bigg)\approx 0.5056$. As a result, after 10 iterations, the error will be reduced by $\approx 10^{-3}$. Thus, the number of FLOPS to reduce the A-norm of the error by a factor of $10^{-3}$ is \bigo(160n).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Question 4}
 {\it Assume that A is a n$\times$n symmetric positive definite matrix. If $\kappa$(A) =\bigo(n), give a rough estimate of the number of CG iterations required to reduce the relative residual to \bigo($\frac{1}{n}$). }\newline
@@ -133,10 +133,10 @@ $$\begin{cases} -u'' +4u = & x\in [0,1] \\ u(0)=-1, & u(1)=2 \end{cases}
 $$
 
 by the central difference scheme. Write your linear system of equations (you must give the matrix A and $\vec{b}$). Solve the system by using classical iteration such as Jacobi, Gauss-Seidel and SOR with n = 1000. Test you relaxation parameter in SOR for several values and decide which one is better. You need to discuss your results.}\newline
-
-The above differential equation can be solved analytically to generate a truth curve, against which the numerical methods can be compared. The solution for this particular ODE is:
-$$u(x)=\frac{e^{-2x}(e^{4x}+2e^{4x+2}-2e^2-e^4)}{e^4-1}
-$$
+%
+%The above differential equation can be solved analytically to generate a truth curve, against which the numerical methods can be compared. The solution for this particular ODE is:
+%$$u(x)=\frac{e^{-2x}(e^{4x}+2e^{4x+2}-2e^2-e^4)}{e^4-1}
+%$$
 
 To solve this equation numerically, the equation must first be discretized via the central difference theorem. The first step is to discretize the term $-u''$:
 $$u''=\frac{d^2u}{dx^2}=\frac{1}{h}\Bigg(\frac{u(x+h)-u(x)}{h}-\frac{u(x)-u(x-h)}{h}\Bigg) = \frac{1}{h^2}\bigg(u(x+h)-2u(x)+u(x-h)\bigg)
@@ -175,29 +175,26 @@ u_{n-1}
      \end{bmatrix}
   $ 
   \end{center}
-
 where $h=\frac{1}{n}$. This discretized ODE was then solved using the Gauss-Jacobi , Gauss-Seidel, and SOR with $n=1000$. 
 
 The A matrix as well as the b and u vectors were created with the following code:
 \lstinputlisting{SetupProb5.m}
-
 The first algorithm tested was the Gauss-Jacobi method. This is the simplest algorithm to implement and has a simple iteration. The G-J method is computed by the equation: 
 $$x_i^{(k+1)}=\frac{1}{a_{ii}}\bigg(b_i+\sum\limits_{\substack{j=1\\ j\ne i}}^n a_{ij}x_j^{(k)}\bigg) \ \ \ \ \ \ \ \ i=1:n
 $$
 The G-J algorithm can quickly be implemented in just a few lines in Matlab, using Matlab's vector notation. The implementation used for this problem is shown below.
 \lstinputlisting{Jacobi.m}
-The G-J method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gj} shows these convergence values.
+The G-J method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gj} shows these convergence values. The convergence criteria is defined as $|\vec{x}^{\ (k+1)}-\vec{x}^{\ (k)}|$. When the method is no longer making any significant changes to the $\vec{x}$ values, it has been deemed converged. This is used throughout this homework question as a metric for performance. 
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=140mm]{gj.png}
+\includegraphics[width=135mm]{gj.png}
 \caption{Convergence of the G-J method.}
 \label{gj}
 \end{center}
 \end{figure}
 
 The second algoritm implemented was the Gauss-Seidel method. The G-S method splits the A matrix into the D, E, and F subparts. The D matrix contains all of the diagonal elements of A. The E and F matrices are the upper and lower triangular matrices, respectively, of A. The G-S algorithm then computes the following iteration:
-
 $$ \vec{x}^{\ (k+1)}=(D-E)^{-1}F\vec{x}^{\ (k)}+(D-F)^{-1}\vec{b}
 $$
 The G-S algorithm can also be quite quickly implemented in just a few lines in Matlab, using Matlab's vector notation. Notably, precomputing the values of $(D-E)^{-1}F$ and $(D-F)^{-1}\vec{b}$ greatly speedup the runtime of the algorithm, as these values are invariant. The implementation used for this problem is shown below.
@@ -207,41 +204,44 @@ The G-S method was run with a number of different convergence criteria to demons
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=140mm]{gs.png}
+\includegraphics[width=135mm]{gs.png}
 \caption{Convergence of the G-S method compared to the G-J method.}
 \label{gs}
 \end{center}
 \end{figure}
-\newpage
-The final method that was implemented was the Selective Over Relaxation (SOR) method. The SOR method is a variant of the Gauss-Seidel method that uses a relaxation parameter, $\omega$, to converge on the solution more efficiently. If $\omega=1$, this method behaves exactly the same as the Gauss-Seidel method. In fact, the code to generate the SOR method is nearly identical to that of the G-S method, except for the addition of one line:
 
-lstinputlisting{SOR.m}
+The final method that was implemented was the Selective Over Relaxation (SOR) method. The SOR method is a variant of the Gauss-Seidel method that uses a relaxation parameter, $\omega$, to converge on the solution more efficiently. If $\omega=1$, this method behaves exactly the same as the Gauss-Seidel method. In fact, the code to generate the SOR method is nearly identical to that of the G-S method, except for the addition of computational line and one exit condition:
 
-As can be seen in the SOR code, the 
+\lstinputlisting{SOR.m}
 
-The choice of the $\omega$ parameter is critical for this method to work effectively.  For this particular problem, $\omega$ values greater than 1.55 would result in the algorithm taking orders of magnitude longer to converge than the G-J or G-S methods. The optimal value of $\omega$ is defined as:
-
+As can be seen in the SOR code, the value \mcode{xgs} is actually the output of the G-S method. This value is then modified by $\omega$ and blended with $(1-\omega)x_0$. The choice of the $\omega$ parameter is critical for this method to work effectively.  For this particular problem, $\omega$ values greater than 1.55 would result in the algorithm taking orders of magnitude longer to converge than the G-J or G-S methods. Thus, an additional exit condition was added to ensure the method would eventually cease. The optimal value of $\omega$ is defined as:
 $$ \omega_{opt}=\frac{2}{1+\sqrt{1-\rho(B)^2}}
 $$
-where $B=D^{-1}(E+F)$ and $\rho(B)$ is the spectral radius of $B$. For this discretized ODE, this value sits at $\approx 1.49375$. The effect of the $\omega$ on the convergence of the SOR method can be seen in Figure \ref{omega}.
+where $B=D^{-1}(E+F)$ and $\rho(B)$ is the spectral radius of $B$. For this discretized ODE, this value sits at $\approx 1.49375$. The effect of the $\omega$ on the convergence of the SOR method can be seen in Figure \ref{omega}. In this plot, 34 different values of $\omega$ were used in the SOR calculation to determine the number of iterations necessary to converge to a solution. The 34 points are not equally spaced in this plot, but rather, there are more points near the minima value of $\omega=1.49375$ to determine the actual best point. 
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=140mm]{omega.png}
-\caption{Number of iterations necessary to converge to $10^{-8}$ vs $\omega$. The effects of $\omega$ on run length can clearly be seen. }
+\includegraphics[width=135mm]{omega.png}
+\caption{Number of iterations necessary to converge to $10^{-8}$ vs $\omega$. The effects of $\omega$ on runtime can clearly be seen. }
 \label{omega}
+\end{center}
+\end{figure}
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[width=135mm]{sor.png}
+\caption{SOR method vs G-S and G-J. }
+\label{sor}
 \end{center}
 \end{figure}
 
 Using the optimal value of $\omega=1.49375$, the SOR method was compared to the G-S and G-J methods, as seen in Figure \ref{sor}. The SOR method is able to converge to a given solution in fewer iterations than either the G-J or G-S methods, due completely to the relaxation parameter. 
 
-\begin{figure}[!h]
-\begin{center}
-\includegraphics[width=140mm]{sor.png}
-\caption{Number of iterations necessary to converge to $10^{-8}$ vs $\omega$. The effects of $\omega$ on run length can clearly be seen. }
-\label{sor}
-\end{center}
-\end{figure}
+
+
+
+
+
 %\begin{figure}[htbp]
 %\begin{center}
 %\begin{tabular}{ | l | c|c| c| c | c | c| c| c| c  | c | }
