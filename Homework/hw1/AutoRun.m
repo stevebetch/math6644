@@ -1,9 +1,9 @@
-
+clear;
 SetupProb5;
 h=waitbar(0,'1');
 clear val;
 w=1.49375;
-for i=1:10
+for i=1:8
     waitbar(i/10,h,sprintf('%s%d%s','Running! ',i,' of 10 running!'));
 val(i)=1/(10^i);
 [xJ,countJ(i)]=Jacobi(A,b,val(i));
@@ -48,11 +48,11 @@ set(p3,'DisplayName','SOR Method with \omega =1.49375','Color',[1 0 0]);
 % Create legend
 legend1 = legend(axes1,'show');
 set(legend1,'FontSize',14);
-
+hold off;
 clear countSOR;
 control=20;
 countSOR=zeros(10,1);
-w=.2:(1.7-.2)/control:1.7;
+w=.1:(1.6-.2)/(control-2):1.6;
 
 h=waitbar(0,'1');
 for i=1:control
@@ -60,4 +60,7 @@ waitbar(i/control,h,sprintf('%s%d%s%d%s','Running SOR ',i,' of ',control,' runni
     [xSOR,countSOR(i)]=SOR(A,b,10^-6,w(i));
 
 end
+figure2 = figure('Name','\omega values');
+plot(w,countSOR);
+
 close(h);

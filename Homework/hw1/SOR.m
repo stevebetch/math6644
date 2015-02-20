@@ -25,7 +25,7 @@ while(1)
         break;
     end
     
-    if(count>10000000)
+    if(count>100000)
        break;
     end
 
