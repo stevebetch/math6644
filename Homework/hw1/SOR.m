@@ -14,7 +14,7 @@ F=tril(A-D);
 deinv=((D-E)^-1)*F;
 dfinv=(D-F)^-1*b;
 
-count=0;
+ count=0;
 x0=zeros(size(b));
 while(1)
     count=count+1;
