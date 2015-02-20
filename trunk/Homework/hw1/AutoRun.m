@@ -2,9 +2,9 @@ clear;
 SetupProb5;
 h=waitbar(0,'1');
 clear val;
-w=1.49375;
-for i=1:8
-    waitbar(i/10,h,sprintf('%s%d%s','Running! ',i,' of 10 running!'));
+w=0.98;
+for i=1:6
+    waitbar(i/6,h,sprintf('%s%d%s','Running! ',i,' of 6 running!'));
 val(i)=1/(10^i);
 [xJ,countJ(i)]=Jacobi(A,b,val(i));
 [xGS,countGS(i) ] = GS( A,b,val(i) );
@@ -57,7 +57,7 @@ w=.1:(1.6-.2)/(control-2):1.6;
 h=waitbar(0,'1');
 for i=1:control
 waitbar(i/control,h,sprintf('%s%d%s%d%s','Running SOR ',i,' of ',control,' running!'));
-    [xSOR,countSOR(i)]=SOR(A,b,10^-6,w(i));
+    [xSOR,countSOR(i)]=SOR(A,b,10^-4,w(i));
 
 end
 figure2 = figure('Name','\omega values');
