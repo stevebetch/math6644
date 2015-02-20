@@ -8,6 +8,7 @@ if(~any(diag(A)))
 end
 
 D=diag(diag(A));
+d=diag(A);
 E=triu(A-D);
 F=tril(A-D);
 deinv=((D-E)^-1)*F;
@@ -17,7 +18,7 @@ count=0;
 x0=zeros(size(b));
 while(1)
     count=count+1;
-    xgs=deinv*x0+dfinv;
+    xgs=(b-A*x0+D*x0).*(1./d);
     x=w*xgs+(1-w)*x0;
 
     if((abs(x-x0)<mindiff))
