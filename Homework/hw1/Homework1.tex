@@ -198,54 +198,46 @@ The Gauss-Jacobi method was used to check for the solution of the ODE. The solut
 
 \begin{figure}[b!]
 \begin{center}
-\includegraphics[width=130mm]{GJsol.png}
+\includegraphics[width=135mm]{GJsol.png}
 \caption{The solutions of the G-J method. As the error decreases, the solution approaches a straight line.}
 \label{sol}
 \end{center}
 \end{figure}
 
-The second algoritm implemented was the Gauss-Seidel method. The G-S method splits the A matrix into the D, E, and F subparts. The D matrix contains all of the diagonal elements of A. The E and F matrices are the upper and lower triangular matrices, respectively, of A. The G-S algorithm then computes the following iteration:
+The second algorithm implemented was the Gauss-Seidel method. The G-S method splits the A matrix into the D, E, and F subparts. The D matrix contains all of the diagonal elements of A. The E and F matrices are the upper and lower triangular matrices, respectively, of A. The G-S algorithm then computes the following iteration:
 $$ \vec{x}^{\ (k+1)}=(D-E)^{-1}F\vec{x}^{\ (k)}+(D-F)^{-1}\vec{b}
 $$
 The G-S algorithm can also be quite quickly implemented in just a few lines in Matlab, using Matlab's vector notation. Notably, precomputing the values of $(D-E)^{-1}F$ and $(D-F)^{-1}\vec{b}$ greatly speedup the runtime of the algorithm, as these values are invariant. The implementation used for this problem is shown below.
 \lstinputlisting{GS.m}
 
-The G-S method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gs} shows these convergence values. The chart also compares the relative performance of the G-J and G-S methods. As can be seen, the G-S method converges much quicker than the G-J method as the constraints on convergence are tightened. 
+The G-S method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{sor} shows these convergence values. The chart also compares the relative performance of the G-J and G-S methods. As can be seen, for this particular case, the G-J and G-S methods seem to perform equally well. 
 
-\begin{figure}[!h]
-\begin{center}
-\includegraphics[width=130mm]{gs.png}
-\caption{Convergence of the G-S method compared to the G-J method.}
-\label{gs}
-\end{center}
-\end{figure}
-
-The final method that was implemented was the Selective Over Relaxation (SOR) method. The SOR method is a variant of the Gauss-Seidel method that uses a relaxation parameter, $\omega$, to converge on the solution more efficiently. If $\omega=1$, this method behaves exactly the same as the Gauss-Seidel method. In fact, the code to generate the SOR method is nearly identical to that of the G-S method, except for the addition of computational line and one exit condition:
+The final method that was implemented was the Selective Over Relaxation (SOR) method. The SOR method is a variant of the Gauss-Seidel method that uses a relaxation parameter, $\omega$, to converge on the solution more efficiently. If $\omega=0.98$, this method behaves exactly the same as the Gauss-Seidel method. In fact, the code to generate the SOR method is nearly identical to that of the G-S method, except for the addition of computational line and one exit condition:
 
 \lstinputlisting{SOR.m}
 
 As can be seen in the SOR code, the value \mcode{xgs} is actually the output of the G-S method. This value is then modified by $\omega$ and blended with $(1-\omega)x_0$. The choice of the $\omega$ parameter is critical for this method to work effectively.  For this particular problem, $\omega$ values greater than 1.55 would result in the algorithm taking orders of magnitude longer to converge than the G-J or G-S methods. Thus, an additional exit condition was added to ensure the method would eventually cease. The optimal value of $\omega$ is defined as:
 $$ \omega_{opt}=\frac{2}{1+\sqrt{1-\rho(B)^2}}
 $$
-where $B=D^{-1}(E+F)$ and $\rho(B)$ is the spectral radius of $B$. For this discretized ODE, this value sits at $\approx 1.49375$. The effect of the $\omega$ on the convergence of the SOR method can be seen in Figure \ref{omega}. In this plot, 34 different values of $\omega$ were used in the SOR calculation to determine the number of iterations necessary to converge to a solution. The 34 points are not equally spaced in this plot, but rather, there are more points near the minima value of $\omega=1.49375$ to determine the actual best point. 
+where $B=D^{-1}(E+F)$ and $\rho(B)$ is the spectral radius of $B$. For this discretized ODE, this value sits at $\approx 0.98$. The effect of the $\omega$ on the convergence of the SOR method can be seen in Figure \ref{omega}. In this plot, 34 different values of $\omega$ were used in the SOR calculation to determine the number of iterations necessary to converge to a solution. The 34 points are not equally spaced in this plot, but rather, there are more points near the minima value of $\omega=0.98$ to determine the actual best point. At an $\omega$ value of 1, the SOR method effectively becomes the G-S method, and thus the number of iterations required to converge spikes at 1. Due to the nature of the this particular ODE, values of $\omega$ greater than 1 were shown to be unstable. This is because the spectral radius of the B matrix, where $B=D^{-1}(E+F)$, was equal to 1. This means $\omega$ values larger than 1 will cause the system to become unstable and the x values will tend towards infinity. Thus, for Figure \ref{omega}, $\omega$ values were only plotted to from .1 to 1. 
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=135mm]{omega.png}
-\caption{Number of iterations necessary to converge to $10^{-8}$ vs $\omega$. The effects of $\omega$ on runtime can clearly be seen. }
+\includegraphics[width=140mm]{omega.png}
+\caption{Number of iterations necessary to converge to $10^{-6}$ vs $\omega$. The effects of $\omega$ on runtime can clearly be seen. }
 \label{omega}
 \end{center}
 \end{figure}
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=135mm]{sor.png}
+\includegraphics[width=140mm]{sor.png}
 \caption{SOR method vs G-S and G-J. }
 \label{sor}
 \end{center}
 \end{figure}
 
-Using the optimal value of $\omega=1.49375$, the SOR method was compared to the G-S and G-J methods, as seen in Figure \ref{sor}. The SOR method is able to converge to a given solution in fewer iterations than either the G-J or G-S methods, due completely to the relaxation parameter. 
+Using the optimal value of $\omega=0.98$, the SOR method was compared to the G-S and G-J methods, as seen in Figure \ref{sor}. The SOR method is able to converge to a given solution in fewer iterations than either the G-J or G-S methods, due completely to the relaxation parameter. 
 
 
 
