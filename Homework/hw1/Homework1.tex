@@ -133,10 +133,10 @@ $$\begin{cases} -u'' +4u = & x\in [0,1] \\ u(0)=-1, & u(1)=2 \end{cases}
 $$
 
 by the central difference scheme. Write your linear system of equations (you must give the matrix A and $\vec{b}$). Solve the system by using classical iteration such as Jacobi, Gauss-Seidel and SOR with n = 1000. Test you relaxation parameter in SOR for several values and decide which one is better. You need to discuss your results.}\newline
-%
-%The above differential equation can be solved analytically to generate a truth curve, against which the numerical methods can be compared. The solution for this particular ODE is:
-%$$u(x)=\frac{e^{-2x}(e^{4x}+2e^{4x+2}-2e^2-e^4)}{e^4-1}
-%$$
+
+The above differential equation can be solved analytically to generate a truth curve, against which the numerical methods can be compared. The solution for this particular ODE is:
+$$u(x)=\frac{e^{-2x}(e^{4x}+2e^{4x+2}-2e^2-e^4)}{e^4-1}
+$$
 
 To solve this equation numerically, the equation must first be discretized via the central difference theorem. The first step is to discretize the term $-u''$:
 $$u''=\frac{d^2u}{dx^2}=\frac{1}{h}\Bigg(\frac{u(x+h)-u(x)}{h}-\frac{u(x)-u(x-h)}{h}\Bigg) = \frac{1}{h^2}\bigg(u(x+h)-2u(x)+u(x-h)\bigg)
@@ -188,9 +188,19 @@ The G-J method was run with a number of different convergence criteria to demons
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=135mm]{gj.png}
+\includegraphics[width=130mm]{gj.png}
 \caption{Convergence of the G-J method.}
 \label{gj}
+\end{center}
+\end{figure}
+
+The Gauss-Jacobi method was used to check for the solution of the ODE. The solutions presented in Figure \ref{sol} show that as the maximum error decreases, the solution approaches that of the analytical solution, which is a straight line from -1 to 2. All of the numerical methods were checked to ensure the correct solutions were generated. 
+
+\begin{figure}[b!]
+\begin{center}
+\includegraphics[width=130mm]{GJsol.png}
+\caption{The solutions of the G-J method. As the error decreases, the solution approaches a straight line.}
+\label{sol}
 \end{center}
 \end{figure}
 
@@ -204,7 +214,7 @@ The G-S method was run with a number of different convergence criteria to demons
 
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[width=135mm]{gs.png}
+\includegraphics[width=130mm]{gs.png}
 \caption{Convergence of the G-S method compared to the G-J method.}
 \label{gs}
 \end{center}

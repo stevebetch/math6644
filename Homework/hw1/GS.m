@@ -27,6 +27,9 @@ while(1)
     if(max(abs(x-x0))<mindiff)
         break;
     end
+    if(count>1000000) %for this assignment, should converge by this.
+        break;
+    end
 
     x0=x;
 end
