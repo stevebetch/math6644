@@ -5,10 +5,10 @@ clear val;
 w=0.98;
 for i=1:6
     waitbar(i/6,h,sprintf('%s%d%s','Running! ',i,' of 6 running!'));
-val(i)=1/(10^i);
-[xJ,countJ(i)]=Jacobi(A,b,val(i));
-[xGS,countGS(i) ] = GS( A,b,val(i) );
-[xSOR,countSOR2(i)]=SOR(A,b,val(i),w);
+val(:,i)=1/(10^i);
+[xJ(:,i),countJ(i)]=Jacobi(A,b,val(i));
+[xGS(:,i),countGS(i) ] = GS( A,b,val(i) );
+[xSOR(:,i),countSOR2(i)]=SOR(A,b,val(i),w);
 
 end
 close(h);
@@ -36,12 +36,12 @@ xlabel('Convergence Criteria','FontSize',16,'Interpreter','latex');
 title('Convergence Criteria vs Number of iterations','FontSize',16,'Interpreter','latex');
 
 % Create semilogx
-p1=semilogx(val,countJ,'Color',[0 0 1]);
+p1=semilogx(val,countJ,'Color',[0 0 1],':');
 set(p1,'DisplayName','Gauss-Jacobi Method','Color',[0 0 1]);
 hold on;
-p2=semilogx(val,countGS,'g');
+p2=semilogx(val,countGS,'--g');
 set(p2,'DisplayName','Gauss-Seidel Method','Color',[0 1 0]);
-p3=semilogx(val,countSOR2,'r');
+p3=semilogx(val,countSOR2,'*r');
 
 
 set(p3,'DisplayName','SOR Method with \omega =1.49375','Color',[1 0 0]);
