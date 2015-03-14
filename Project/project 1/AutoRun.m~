@@ -18,17 +18,12 @@ k=1:runs(a);
 parfor j=1:runs(a) 
         S(j,k)=sqrt(2/(n+1))*sin((pi*j*k)/(n+1));     
 end
-Ts(a)=toc(Stic(a));
+Ts(a)=toc(Stic);
 
-
-PCGtic=tic;
 A2=S*A*S';
 [PCGx,PCGcount(a) ] = PCGmehtod( A2,b,(A2)^-1);
-Tpcg(a)=toc(PCGtic(a));
-
-CGtic=tic;
 [CGx,CGcount(a)]=CGmehtod(A,b);
-Tcg(a)=toc(CGtic(a));
+
 end
 
 close(h);
