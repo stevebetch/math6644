@@ -19,7 +19,11 @@ if(norm(r)<tol)
     return;
 end
 count=0;
+h=waitbar(0,'1');
 while (norm(r))>tol
+    if(mod(count,100)==0)
+         waitbar(1,h,sprintf('%s%d','Running! Iteration: ',count));
+    end
     count=count+1;
     q=A*p;
   
@@ -29,5 +33,7 @@ while (norm(r))>tol
     r=ro-alpha*q;
     beta=(r'*r)/(ro'*ro);
     p=r+beta*p;
-    
+    if(count>10000)
+        disp(count);
+    end
 end
