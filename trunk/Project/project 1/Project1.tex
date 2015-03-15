@@ -28,6 +28,7 @@
 \section*{Part 1}
 
 {\it Discretize the following differential equation:
+
 $$\begin{cases} -u'' =2x-\frac{1}{2}& \ \ x\in [0,1] \\ u(0)=1, & u(1)=-1 \end{cases}
 $$
 by centered difference scheme with n interior mesh points. Solve the resulting linear system by Conjugate Gradient (CG), Preconditioned CG with Sine transform to construct the preconditioner.}
@@ -37,19 +38,27 @@ $$u(x) = -0.333333 x^3+0.25 x^2-1.91667 x+1
 $$
 
 
-The discretized one-dimensional equation above was solved by the central difference scheme with $n$ interior points. The resulting problem is then an $n+2\times n+2$ matrix, A, and $n+2\times 1$ vectors, x and b. The problem was solved using both the Conjugate Gradient (CG) method and the Preconditioned CG method with a Sine transform preconditioner, $S$. The $S$ matrix was defined as:
+The discretized one-dimensional equation above was solved by the central difference scheme with $n$ interior points. The resulting problem is then an $(n+2)\times (n+2)$ matrix, A, and $(n+2)\times 1$ vectors, x and b. The problem was solved using both the Conjugate Gradient (CG) method and the Preconditioned CG method with a Sine transform preconditioner, $S$. The $S$ matrix was defined as:
 
 $$[S]_{j,k}=\sqrt{\frac{2}{n+1}}sin\Big(\frac{\pi jk}{n+1}\Big)
 $$
 
-The A matrix formed from the discretized equation forms a tridiagonal matrix, with elements directly on the primary diagonal as well as elements one diagonal above and below the primary diagonal. This sparse matrix was then run with the Conjugate Gradient(CG) method. The CG method is one of the most prominent iterative methods for solving sparse matrices as it converges much more quickly than other iterative methods such as steepest descent. The Conjugate Gradient iterates in such a way that each new residual is orthogonal to all the previous residuals and search directions. Each new search direction is constructed is A-orthogonal to all the previous residuals and search directions, thus using the Krylov subspace to iterate more efficiently. The CG method was run with $n$ values from 256 to 16384. As the values of $n$ increased, the time necessary to complete the iteration increased proportionally. The final results of the CG method can be found in Figure \ref{p1}. After the CG method completed, the $S$ matrix, used in the PCG method, was formed. 
+The A matrix formed from the discretized equation forms a tridiagonal matrix, with elements directly on the primary diagonal as well as elements one diagonal above and below the primary diagonal. This sparse matrix was then run with the Conjugate Gradient(CG) method. The CG method is one of the most prominent iterative methods for solving sparse matrices as it converges much more quickly than other iterative methods such as steepest descent. The Conjugate Gradient iterates in such a way that each new residual is orthogonal to all the previous residuals and search directions. Each new search direction is constructed is A-orthogonal to all the previous residuals and search directions, thus using the Krylov subspace to iterate more efficiently. The CG method was run with $n$ interior points from 256 to 16384. As the values of $n$ increased, the time necessary to complete the iteration increased proportionally. The final results of the CG method can be found in Figure \ref{p1}.  Figure \ref{final} shows the CG method approaching After the CG method completed, the $S$ matrix, used in the PCG method, was formed. 
+
+%\begin{figure}[!h]
+%\begin{center}
+%\includegraphics[width=130mm]{p1s.png}
+%\caption{Convergence of the CG method.}
+%\label{final}
+%\end{center}
+%\end{figure}
 
 The $S$ matrix was formed in two different ways to determine the most efficient method. The first method was using Matlab's vector math and \mcode{parfor} to form the matrix in parallel. This was achieved with the following code:
 
 \begin{lstlisting}
 k=1:runs(a); %generates a vector from 1 to the length of n. 
 %runs contains the list of n values and a is the current iteration.
-parfor j=1:runs(a)  %Parallel for loop
+parfor j=1:runs(a)  %Parallel for loop in matlab
         S(j,k)=sqrt(2/(n+1))*sin((pi*j*k)/(n+1)); %form an entire column of values
 end
 \end{lstlisting}
@@ -79,29 +88,36 @@ This code was run with 4 workers in parallel, allowing for a theoretical 4x impr
 
 
 
-The $S$ matrix acted as a preconditioner to the tridiagonal A matrix. A preconditioner is used to make a In this particular problem, the preconditioned was split to achieve extremely fast convergence rates. Preconditioning the A matrix by $SAS^T$ results in a diagonal matrix. Preconditioning A with this matrix, and passing the inverse, $(SAS^{T})^{-1}$, to the PCG method results in an extremely fast convergence rate. While this method does require two matrix-matrix 
+The $S$ matrix acted as a preconditioner to the tridiagonal $A$ matrix. A preconditioned is used to make a problem that is difficult to solve, simpler. The preconditioner is customized and tailored to the problem at hand. For this problem, preconditioning the $A$ matrix by $SAS^T$ results in a diagonal matrix. To achieve extremely fast convergence rates, the preconditioner matrix was split. After preconditioning $A$ with the $S$ matrix, the  inverse, $(SAS^{T})^{-1}$, was calculated and passed to the PCG method. As a result, the PCG method was able to achieve extremely fast convergence rates. While this method does require two matrix-matrix multiplications to setup the preconditioned $A$ matrix, the resulting diagonal matrix was extremely easy to solve. The inverse of the diagonal matrix, $(SAS^{T})^{-1}$, can be calculated in  \bigo(n) time, as the inverse of a diagonal matrix is the inverse of each element on the diagonal. With the chosen preconditioner, each run of the PCG was able to converge in 1 iteration. 
 
 
 \begin{figure}[htbp]
 \begin{center}
 \begin{tabular}{ |c|c|c| c|c|}
 \hline
-  n & CG iterations & CG runtime (sec) & PCG iterations & PCG runtime (sec) (sec)\ \\\hline
-  258 &0.0194 & 0.0494& 0.5190 &0.00 \\\hline
-  514 &0.0111 & 0.0564 & 0.0196 &0.00 \\\hline
-  1026 &0.0423 & 0.0771 & 0.0706 &0.00 \\\hline
-  2050 &0.1704 & 0.1439 & 0.2003 &0.00  \\\hline
-  4098 &0.5087 & 0.4694 &1.1024 &0.00  \\\hline
-  8194 &8.1068 & 1.9299 & 3.9583 &0.00 \\\hline
-  16386 &37.3268 & 7.9876 & 29.3784 &0.00 \\\hline
+  n & CG iterations & CG runtime (sec) & PCG iterations & PCG runtime (sec)\ \\\hline
+258 & 129 & 0.023895 & 1 & 0.294494 \\\hline
+514 & 257 & 0.014975 & 1 & 0.023645 \\\hline
+1026 & 513 & 0.193338 & 1 & 0.111805 \\\hline
+2050 & 1025 & 2.468402 & 1 & 0.809114 \\\hline
+4098 & 2049 & 18.554962 & 1 & 5.579513 \\\hline
+8194 & 4097 & 145.323975 & 1 & 40.182528 \\\hline
+16386 & 8193 & 1144.595261 & 1 & 326.499772 \\\hline
   % Design2 &300 & 380 & 370 & 34 & 40& 400& 100& 50& 100& 100 \\\hline
 %  Design3 &300 & 600 & 580 & 40 & 50& 550& 100& 150& 200& 250 \\\hline
 
 \end{tabular}
-\caption{Runtime for generating the $S$ }
+\caption{Runtimes and iteration counts for the CG and PCG methods }
 \label{p1}
 \end{center}
 \end{figure}
+
+As can be seen in Figure \ref{p1}, the PCG method is able to converge in one iteration and in much less time than the CG method. When recording the timing for the PCG method, the time required to form the $S$ matrix was not accounted for, but can be found in Figure \ref{parfor}. The recorded time for the PCG method did account for the two costly matrix multiplication operations, which were undoubtedly the source of much of the runtime. Regardless, the results are impressively conclusive. The PCG method is significantly faster than the regular CG method for this problem. The runtimes for both methods actually decrease for the $n=512$ interior mesh point case ($n=514$ total points). This is actually due to bandwidth/latency optimizations that are occurring at the processor/memory cache level. As n increases, the number of CG iterations also roughly doubles. However, for both the CG and the PCG method, the time to complete the method increase by a factor of 8. The primary driver of this increase is the matrix multiplication that occurs in each method. 
+
+
+
+
+
 
 
 \section*{Part 2}
@@ -109,7 +125,7 @@ The $S$ matrix acted as a preconditioner to the tridiagonal A matrix. A precondi
 
 
 
-{\it Construct a dense 3$\times$3 matrix G with $\rho$(G)$>$1. Define an iteration and find an example of $\vec{x}_0$ and $\vec{c}$ such that the iteration does not converge.} \newline
+{\it Perform the CG and PCG for Toeplitz systems using both Strang's and Chan's circulant matrices as the preconditioners..} \newline
 Beginning with the dense A matrix of: $
 A = \begin{bmatrix}
 1& 2& 1          \\[0.3em]
@@ -186,15 +202,8 @@ The G-J algorithm can quickly be implemented in just a few lines in Matlab, usin
 \lstinputlisting{Jacobi.m}
 The G-J method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gj} shows these convergence values. The convergence criteria is defined as $|\vec{x}^{\ (k+1)}-\vec{x}^{\ (k)}|$. When the method is no longer making any significant changes to the $\vec{x}$ values, it has been deemed converged. This is used throughout this homework question as a metric for performance. 
 
-\begin{figure}[!h]
-\begin{center}
-\includegraphics[width=130mm]{}
-\caption{Convergence of the G-J method.}
-\label{gj}
-\end{center}
-\end{figure}
-\begin{thebibliography}{9}
 
+\begin{thebibliography}{9}
 \bibitem{Painless}
  Jonathan Richard Shewchuk,
   \emph{An Introduction to the Conjugate Gradient Method Without the Agonizing Pain}.
