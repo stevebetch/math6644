@@ -1,5 +1,5 @@
 %Creates the A matrix for problem 5!
-function [A,b,u]=SetupProb1(n)
+function [A,b,u]=SetupProb5b(n)
 A=full(gallery('tridiag',n,1,-2,1));
 h=1/n;
 h2=h^2;
