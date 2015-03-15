@@ -1,4 +1,4 @@
-function [ x,count ] = PCGmehtod( A,b,B,tol )
+function [ x,count ] = PCGmethod( A,b,B,tol )
 %CGMEHTOD Preconditioned Conjugate Gradient Method
 %   This method takes in an A matrix and b vector as well as a final
 %   tolerance. This method attempts to solve the system of linear Equations
@@ -16,8 +16,13 @@ p=z;
 
 count=0;
 debug=1;
+ h=waitbar(0,'PCG method');
 while debug>tol && count <100000
     count=count+1;
+    if(mod(count,500)==0)
+         waitbar(1,h,sprintf('%s%d','Running PCG! Iteration: ',count));
+    end
+    
     q=A*p;
     alpha=(z'*r)/(p'*q);
     
@@ -31,4 +36,6 @@ while debug>tol && count <100000
     p=z+beta*p;
     
     debug=(norm(r));
+end
+close(h);
 end
