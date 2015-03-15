@@ -1,4 +1,4 @@
-function [ x,count ] = CGmehtod( A,b,tol )
+function [ x,count ] = CGmethod( A,b,tol )
 %CGMEHTOD Conjugate Gradient Method
 %   This method takes in an A matrix and b vector as well as a final
 %   tolerance. This method attempts to solve the system of linear Equations
@@ -21,10 +21,11 @@ end
 count=0;
  h=waitbar(0,'CG method');
 while (max(norm(r)))>tol
-%     if(mod(count,100)==0)
-%          waitbar(1,h,sprintf('%s%d','Running! Iteration: ',count));
-%     end
     count=count+1;
+    if(mod(count,500)==0)
+         waitbar(1,h,sprintf('%s%d','Running CG! Iteration: ',count));
+    end
+    
     q=A*p;
   
     alpha=(r'*r)/(p'*q);

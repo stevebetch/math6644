@@ -6,7 +6,7 @@ function [A,b]=SetupProb2a(n,p)
 x=1:n;
 ak=abs(x+1).^-p;
 A=toeplitz(ak); % generates a symmetric toeplitz matrix based on the row given.
-b= randperm(n,n);
+b= randn(n,1);
 
 
 
