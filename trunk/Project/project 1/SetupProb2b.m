@@ -1,14 +1,17 @@
 %Creates the A matrix for problem 5!
 function [A,b,u]=SetupProb5b(n)
-A=full(gallery('tridiag',n,1,-2,1));
-h=1/n;
-h2=h^2;
-for i=1:n
-    b(i,1)=h2*(((2*i)/n)-.5);
-end
-% b=zeros(n,1);
+% This function sets up the A, b matrices for part 2 of the project. This
+% function creates the A matrix based on the function a_k=|k+1|^-p.
 
-b(1)=1;
-b(end)=-1;
-u=0:1/(n-1):1; %creates a 1000x1 vector bounded by [0,1] 
+theta=-pi:(2*pi)/(n-1):pi;
+vals=fft(theta);
+a=real(vals);
+b=imag(vals);
+A=toeplitz([a,b]); % generates a symmetric toeplitz matrix based on the row given.
+b= randperm(100,n)';
+b(end+1:end+n,1)=0;
+
+
+
+
 end
