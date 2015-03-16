@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  15 MAR 2015 21:03
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  15 MAR 2015 22:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -489,7 +489,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 124--125
 
  []
 
-[3] [4] [5] [6] (./Project1.aux)
+[3] [4] [5] [6] [7] (./Project1.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -522,10 +522,10 @@ s/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2012/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2012/texmf-dist/fonts/t
 ype1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2012/texmf-dist/fonts/typ
 e1/urw/courier/ucrr8a.pfb>
-Output written on Project1.pdf (6 pages, 207055 bytes).
+Output written on Project1.pdf (7 pages, 211178 bytes).
 PDF statistics:
- 97 PDF objects out of 1000 (max. 8388607)
- 70 compressed objects within 1 object stream
+ 102 PDF objects out of 1000 (max. 8388607)
+ 74 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
