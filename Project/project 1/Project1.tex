@@ -178,8 +178,7 @@ a_{j-n} & [\frac{n}{2} < j < n
 c_{n+j} 0<-j <n
  \end{cases}
 $$
-
-which for a symmetric $4\times4$ matrix would look like:
+Where $[\ \cdot\ ]$ is the \mcode{floor()} algorithm. For a symmetric $4\times4$ matrix, this would look like:
 
    $$
 C_{strang} = \begin{bmatrix}
@@ -192,14 +191,46 @@ c_{1}& c_{2} &  c_{1}    & c_{0}      \\[0.3em]
   
 The diagonals containing the value $c_1$  appear in the two corners, where as the $A$ matrix had new, and possibly smaller, values $a_{n-1}$. In the Strang circulant, this information is left out. The inverse of Strang circulant can be applied to the $A$ matrix in order to precondition it. Inverting the Strang circulant is done with the following code:
 \begin{lstlisting}
-a1=ifft(fft(Cn(:,1)).^-1)'; %DFT, then invert, then iDFT
+a1=ifft(fft(Cn(:,1)).^-1)'; %DFT first column of Cn, then invert, then iDFT
 a1s=zeros(length(a1));
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2); %Matlab's circular shifting algorithm
      end
 \end{lstlisting}
  
- where $C_n$ is the circulant, \mcode{fft} is the Fast Fourier Transform (FFT), and \mcode{ifft} is the inverse FFT. 
+ where $C_n$ is the circulant, \mcode{fft} is the Fast Fourier Transform (FFT), and \mcode{ifft} is the inverse FFT. Once inverted, the circulant can then be passed to the Preconditioned Conjugate Gradient method for processing. The Chan preconditioner is created in a similar manner. 
+ 
+ The Chan circulant is defined as:
+ 
+ $$\begin{cases} 
+\frac{(n-j)a_j+ja_{j-n}}{n}& 0\le j \le n \\
+a_{j-n} & [\frac{n}{2} < j < n 
+c_{n+j} 0<-j <n
+ \end{cases}
+$$
+
+which for a symmetric $4\times4$ matrix would look like:
+
+   $$
+C_{strang} = \begin{bmatrix}
+c_0& c_{1}& c_{2} & c_{1}    \\[0.3em]
+c_{1}& c_{0}&  c_{1} &  c_2      \\[0.3em]
+c_{2}& c_{1}& c_0 &   c_1     \\[0.3em]
+c_{1}& c_{2} &  c_{1}    & c_{0}      \\[0.3em]
+     \end{bmatrix}
+  $$
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
 \newpage
