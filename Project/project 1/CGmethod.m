@@ -8,7 +8,7 @@ function [ x,count ] = CGmethod( A,b,tol )
 
 
 if( nargin==2) %only give the A/b matrix/vec
-    tol=1e-8; %set the default tolerance to 10^-8
+    tol=1e-6; %set the default tolerance to 10^-8
 end
 
 x=b; %Set x = b for the first guess.
@@ -35,6 +35,6 @@ while debugV>tol && count <100000
     r=ro-alpha*q;
     beta=(r'*r)/(ro'*ro);
     p=r+beta*p;
-    debugV=(norm(r));
+    debugV=norm(r);
 end
 close(h);

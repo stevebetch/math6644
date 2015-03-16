@@ -147,7 +147,7 @@ c_{-1}& c_{-2}& \dots &  c_{-(n-1)}    & c_{0}      \\[0.3em]
      \end{bmatrix}
   $$
   
-  These circulant matrices approximate and explain the behavior of Toeplitz matrices and thus are useful as preconditioners for the Preconditioned Conjugate Gradient (PCG) method. In order to understand the properties of circulant matrices, one must look at how their eigenvectors are created. The eigenvalues, $\lambda_k$, and eigenvectors, $\nu_k$  are given by $C_n\nu =\lambda \nu$. This can also be expressed as the $n$ difference equations:
+  These circulant matrices approximate and explain the behavior of Toeplitz matrices and thus are useful as preconditioners for the Preconditioned Conjugate Gradient (PCG) method. In order to understand the properties of circulant matrices, one must look at how their eigenvectors are created\cite{toeplitz}\cite{chanAndStrang}\cite{Chan}. The eigenvalues, $\lambda_k$, and eigenvectors, $\nu_k$  are given by $C_n\nu =\lambda \nu$. This can also be expressed as the $n$ difference equations:
   $$ \sum\limits_{k=0}^{m-1} c_{n-m+k}\nu_k+\sum\limits_{k=m}^{n-1}c_{k}\nu_{k-(n-m)} =\lambda\nu_m \ \ \ \ \ \  m=0:n-1
   $$
   
@@ -164,16 +164,44 @@ The curious thing about this particular value set for $\rho$ is that this is the
   
   $$ C_n =F_n^*\Lambda_nF_n
   $$
-  where $[F]_{j,k}=\frac{1}{\sqrt{n}}e^{\frac{2\pi ijk}{n}}$ for $0\le j,k\le n-1$ and $\Lambda$ is a diagonal matrix holding the eigenvalues of $C_n$. The DFT operation is extremely efficient  compared to traditional matrix-vector multiplication. Once $\Lambda$ has been obtained, 
+  where $[F]_{j,k}=\frac{1}{\sqrt{n}}e^{\frac{2\pi ijk}{n}}$ for $0\le j,k\le n-1$ and $\Lambda$ is a diagonal matrix holding the eigenvalues of $C_n$. The DFT operation is extremely efficient(\bigo($n\ log\ n$)) compared to traditional matrix-vector multiplication(\bigo($n^2$) at best). Once $\Lambda$ has been obtained, the products $C_v\vec{y}$ and $C_n^{-1}\vec{y}$ can be computed in \bigo($n\ log\ n$).
   
  
+ Circulant matrices can be used to speed up the Conjugate Gradient (CG) method, when solving a symmetric positive definite Toeplitz system:
+ $$A_n\vec{x}=\vec{b}
+ $$
+ Two commonly used circulant preconditioners for speeding up the CG method are G. Strang's\cite{strang} circulant preconditioner and T. Chan's\cite{Chan} circulant preconditioner. String's conditioner is defined by the rules:
  
  
- 
- 
- 
+ $$\begin{cases} a_j & 0\le j \le [\frac{n}{2}] \\
+a_{j-n} & [\frac{n}{2} < j < n 
+c_{n+j} 0<-j <n
+ \end{cases}
+$$
+
+which for a symmetric $4\times4$ matrix would look like:
+
+   $$
+C_{strang} = \begin{bmatrix}
+c_0& c_{1}& c_{2} & c_{1}    \\[0.3em]
+c_{1}& c_{0}&  c_{1} &  c_2      \\[0.3em]
+c_{2}& c_{1}& c_0 &   c_1     \\[0.3em]
+c_{1}& c_{2} &  c_{1}    & c_{0}      \\[0.3em]
+     \end{bmatrix}
+  $$
   
-  
+The diagonals containing the value $c_1$  appear in the two corners, where as the $A$ matrix had new, and possibly smaller, values $a_{n-1}$. In the Strang circulant, this information is left out. The inverse of Strang circulant can be applied to the $A$ matrix in order to precondition it. Inverting the Strang circulant is done with the following code:
+\begin{lstlisting}
+a1=ifft(fft(Cn(:,1)).^-1)'; %DFT, then invert, then iDFT
+a1s=zeros(length(a1));
+     parfor j=1:length(A)
+            a1s(:,j)=circshift(a1,j-1,2); %Matlab's circular shifting algorithm
+     end
+\end{lstlisting}
+ 
+ where $C_n$ is the circulant, \mcode{fft} is the Fast Fourier Transform (FFT), and \mcode{ifft} is the inverse FFT. 
+ 
+ 
 \newpage
 \begin{thebibliography}{9}
 \bibitem{Painless}
