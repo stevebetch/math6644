@@ -13,11 +13,12 @@ x=b; %Set x = b for the first guess.
 r=b-A*x; %find the residual.
 z=(r\B)'; %solve for z
 p=z;
-
+r0=norm(r);
 count=0;
-debug=1;
+debugV=r0;
+
  h=waitbar(0,'PCG method');
-while debug>tol && count <100000
+while debugV>tol && count <100000
     count=count+1;
     if(mod(count,500)==0)
          waitbar(1,h,sprintf('%s%d','Running PCG! Iteration: ',count));
@@ -35,7 +36,7 @@ while debug>tol && count <100000
     
     p=z+beta*p;
     
-    debug=(norm(r));
+    debugV=(norm(r));
 end
 close(h);
 end

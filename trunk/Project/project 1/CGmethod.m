@@ -13,14 +13,15 @@ end
 
 x=b; %Set x = b for the first guess.
 r=b-A*x; %find the residual.
-
+r0=norm(r);
 p=r;
 if(norm(r)<tol)
     return;
 end
 count=0;
+debugV=r0;
  h=waitbar(0,'CG method');
-while (max(norm(r)))>tol
+while debugV>tol && count <100000
     count=count+1;
     if(mod(count,500)==0)
          waitbar(1,h,sprintf('%s%d','Running CG! Iteration: ',count));
@@ -34,6 +35,6 @@ while (max(norm(r)))>tol
     r=ro-alpha*q;
     beta=(r'*r)/(ro'*ro);
     p=r+beta*p;
-   
+    debugV=(norm(r));
 end
 close(h);

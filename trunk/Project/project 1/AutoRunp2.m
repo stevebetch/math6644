@@ -39,25 +39,17 @@ CC=diag(diag(A)); % get the diagonal parts.
 Ccfill=A(1,:); %grab first row. 
 % Ccfill(1)=[]; % kill off the diagonal part.
 cj=zeros(1,length(A)-1);
-for j=1:length(cj)
+parfor j=1:length(cj)
   cj(j)=((n-j)*Ccfill(j+1)+j*Ccfill(mod(-j,n+1)) )/n;
 end
-
+diags=diag(A);
         parfor j=1:length(A)
             cjJ=circshift(cj,j-1,2);
-            CC(j,j+1:end)=cjJ(j:end);
-            CC(j,1:j-1)=cjJ(1:j-1);
+            CC(j,:)=[cjJ(1:j-1),diags(j),cjJ(j:end)];
+            
         end
 
 
-%% Create the DFT matrix.
-
-% Ns=length(CS);
-% Ws=ones(Ns);
-% r=2:Ns;
-% q=(2:Ns)';
-% Ws(2:end,2:end)=exp(-(2.*pi.*q*r)/Ns)/sqrt(Ns);
-% inWs=Ws^-1;
 
 
 
@@ -65,12 +57,16 @@ end
     
     
 %Begin with Strang's method
-    lambdaS=fft(CS(:,1));
 
-    
+
+     
     PCGticS(a,i)=tic;
-%     a2A;
-    [PCGxS,PCGcountS(a,i) ] = PCGmethod( A,b,CS^-1);
+     a1=ifft(fft(CS(:,1)).^-1)';
+     a1s=zeros(length(a1));
+     parfor j=1:length(A)
+            a1s(:,j)=circshift(a1,j-1,2);
+     end
+    [PCGxS,PCGcountS(a,i) ] = PCGmethod( A,b,a1s);
     TpcgS(a,i)=toc(PCGticS(a,i));
 
     CGtic(a,i)=tic;
@@ -79,11 +75,16 @@ end
     
     
 %  Now for Chan's method.
-
+    a2=CC^-1;
     PCGticC(a,i)=tic;
-%     a2=CC*A*CC';
-    [PCGxC,PCGcountC(a,i) ] = PCGmethod( A,b,CC^-1);
-    TpcgS(a,i)=toc(PCGticC(a,i));
+     a1=ifft(fft(CC(:,1)).^-1)';
+     a1s=zeros(length(a1));
+     parfor j=1:length(A)
+            a1s(:,j)=circshift(a1,j-1,2);
+     end
+    
+    [PCGxC,PCGcountC(a,i) ] = PCGmethod( A,b,a1s);
+    TpcgC(a,i)=toc(PCGticC(a,i));
 
     CGtic(a,i)=tic;
     [CGxC,CGcount(a,i)]=CGmethod(A,b);
@@ -98,92 +99,4 @@ close(h);
 %% 
 %%
 %%
-
-h=waitbar(0,'1');
-for i=1:length(p)
-    for a=1:length(runs)
-     waitbar(a/length(runs),h,sprintf('%s%d%s%d%s%d','Running! ',a,' of ', length(runs) ,' running! P= ',p(i)));
-
-     n=runs(a);
-    [A,b]=SetupProb2b(n,p(i));
-%     n=2*n;
-%%     Create Strang's Circulent matrix.
-% CSb=zeros(size(A));
-CSb=diag(diag(A)); % get the diagonal parts.
-Bcfill=A(1,:); %grab first row. 
-Bcfill(1)=[]; % kill off the diagonal part.
-Bn2=floor(length(A)/2);
-Bcfill=Bcfill(1:Bn2); % drop the excess data, 
-Bcfill2=fliplr(Bcfill);
-Bcfill2(1)=[];
-Bcfill=[Bcfill,Bcfill2];
-CSb(1,2:end)=Bcfill;
-        parfor j=2:length(A)
-%             diagC=CSb(j,j);
-            BcfillJ=circshift(Bcfill,j-1,2);
-            CSb(j,j+1:end)=BcfillJ(j:end);
-            CSb(j,1:j-1)=BcfillJ(1:j-1);
-    
-        end
-%% Crete Chang's method
-
-CCb=diag(diag(A)); % get the diagonal parts.
-Ccfillb=A(1,:); %grab first row. 
-% Ccfill(1)=[]; % kill off the diagonal part.
-cjb=zeros(1,length(A)-1);
-for j=1:length(cjb)
-  cjb(j)=((n-j)*Ccfillb(j+1)+j*Ccfillb(mod(-j,n+1)) )/n;
-end
-
-        parfor j=1:length(A)
-            cjJb=circshift(cjb,j-1,2);
-            CCb(j,j+1:end)=cjJb(j:end);
-            CCb(j,1:j-1)=cjJb(1:j-1);
-        end
-
-
-%% Create the DFT matrix.
-
-% Ns=length(CSb);
-% Ws=ones(Ns);
-% r=2:Ns;
-% q=(2:Ns)';
-% Ws(2:end,2:end)=exp(-(2.*pi.*q*r)/Ns)/sqrt(Ns);
-% inWs=Ws^-1;
-
-
-
-
-    
-    
-%Begin with Strang's method
-    lambdaS=fft(CSb(:,1));
-
-    
-    PCGticSB(a,i)=tic;
-%     a2A;
-    [PCGxSB,PCGcountSB(a,i) ] = PCGmethod( A,b,CSb^-1);
-    TpcgSB(a,i)=toc(PCGticSB(a,i));
-
-    CGticB(a,i)=tic;
-    [CGxSB,CGcountB(a,i)]=CGmethod(A,b);
-    TcgSB(a,i)=toc(CGticB(a,i)); %#ok<*SAGROW>
-    
-    
-%  Now for Chan's method.
-
-    PCGticCB(a,i)=tic;
-%     a2=CC*A*CC';
-    [PCGxCB,PCGcountCB(a,i) ] = PCGmethod( A,b,CCb^-1);
-    TpcgSB(a,i)=toc(PCGticCB(a,i));
-
-    CGBtic(a,i)=tic;
-    [CGxCB,CGcount(a,i)]=CGmethod(A,b);
-    TcgB(a,i)=toc(CGticB(a,i));
-    
-
-    end
-end
-close(h);
-
-
+p2();

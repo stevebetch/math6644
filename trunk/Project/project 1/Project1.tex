@@ -121,95 +121,87 @@ As can be seen in Figure \ref{p1}, the PCG method is able to converge in one ite
 
 
 \section*{Part 2}
+{\it Perform the CG and PCG for Toeplitz systems using both Strang's and Chan's circulant matrices as the preconditioners.} \newline
 
 
-
-
-{\it Perform the CG and PCG for Toeplitz systems using both Strang's and Chan's circulant matrices as the preconditioners..} \newline
-Beginning with the dense A matrix of: $
+The a matrix is defined as a Toeplitz matrix if it has the following form: 
+$$
 A = \begin{bmatrix}
-1& 2& 1          \\[0.3em]
-4& 9           & 2 \\[0.3em]
-     7           & 20 &2
+a_0& a_{-1}& \dots & a_{2-n}    & a_{1-n}      \\[0.3em]
+a_1& a_{0}&  a_{-1} & a_{2-n}    & a_{1-n}      \\[0.3em]
+\vdots& a_{1}& a_0 & \ddots   & \vdots     \\[0.3em]
+a_{n-2}&  & \ddots & \ddots   & a_{-1}      \\[0.3em]
+a_{n-1}& a_{n-2}& \dots & a_1    & a_{0}      \\[0.3em]
      \end{bmatrix}
-  $ , we generate the G matrix by first constructing the N and M matrices. The M matrix is defined as the diagonal elements of A and the N matrix is defined as: N=M-A, or the off diagonal elements multiplied by -1. The G matrix is then constructed by $G=M^-1*N$, which creates the following matrix:
-$
-G = \begin{bmatrix}
-0 & -2& -1          \\[0.3em]
-       -\frac{4}{9} & 0           & -\frac{2}{9} \\[0.3em]
-       \frac{7}{2}           & -10& 0
-     \end{bmatrix}
-  $ .  The spectral radius of the G matrix is 2.9413. This spectral radius makes for an unstable iteration matrix that will most likely result in the iterative method going to infinity, rather than converging on a value. An iteration for this matrix is defined as: 
-  $$ \vec{x}_{k+1}=G\vec{x}_k+\vec{c}
   $$
-
-\section*{Question 5}
-{\it Discreteize the following differential equation:
-$$\begin{cases} -u'' +4u = & x\in [0,1] \\ u(0)=-1, & u(1)=2 \end{cases}
-$$
-
-by the central difference scheme. Write your linear system of equations (you must give the matrix A and $\vec{b}$). Solve the system by using classical iteration such as Jacobi, Gauss-Seidel and SOR with n = 1000. Test you relaxation parameter in SOR for several values and decide which one is better. You need to discuss your results.}\newline
-
-The above differential equation can be solved analytically to generate a truth curve, against which the numerical methods can be compared. The solution for this particular ODE is:
-$$u(x)=\frac{e^{-2x}(e^{4x}+2e^{4x+2}-2e^2-e^4)}{e^4-1}
-$$
-
-To solve this equation numerically, the equation must first be discretized via the central difference theorem. The first step is to discretize the term $-u''$:
-$$u''=\frac{d^2u}{dx^2}=\frac{1}{h}\Bigg(\frac{u(x+h)-u(x)}{h}-\frac{u(x)-u(x-h)}{h}\Bigg) = \frac{1}{h^2}\bigg(u(x+h)-2u(x)+u(x-h)\bigg)
-$$
-
-This gives the final form of the differential equation, with the same boundary conditions, of:
-$$0=-\frac{1}{h^2}\bigg(u(x+h)-2u(x)+u(x-h)\bigg)+4u(x)
-$$
-Realizing that $h=x_i-x_{i-1}$, this can be simplified and rewritten as:
-$$0=u_{i+1}-2u_i+u_{i-1}-4h^2u_i
-$$
-
-This form of the equation can be used to generate the A and $\vec{b}$ variables, where $A\vec{u}=\vec{b}$:
-
-{\begin{center}
-$A= \begin{bmatrix}
--2-4h^2 & 1 &0 &0 &0&\dots&0          \\[0.3em]
-1 &-2-4h^2 & 1 &0 &0&\dots&0     \\[0.3em]
-0 &1 &-2-4h^2 & 1 &0 &\dots&0 \\[0.3em]
-&&\ddots &\ddots &\ddots \\[0.3em]
-0&\dots&\dots&\dots&\dots&1&-2-4h^2 
+  
+  Toeplitz matrices are extremely useful and arise in solutions to differential and integral equations, as well as applications such as signal processing and optical analysis. A common special case of Toeplitz matrices are {\it circulant} matrices. A matrix is called circulant if it has the form of: 
+  
+  $$
+C = \begin{bmatrix}
+c_0& c_{-1}& \dots & c_{-(n-2)}    & c_{-(n-1)}      \\[0.3em]
+c_{-(n-1)}& c_{0}&  c_{-1} &  \dots   &       \\[0.3em]
+c_{-(n-2)}& c_{-(n-1)}& c_0 &    & \vdots     \\[0.3em]
+   \vdots &  & & \ddots   &       \\[0.3em]
+c_{-1}& c_{-2}& \dots &  c_{-(n-1)}    & c_{0}      \\[0.3em]
      \end{bmatrix}
-  $  ,  $\vec{u} = \begin{bmatrix}
-u_1          \\[0.3em]
-u_2\\[0.3em]
-\vdots \\[0.3em]
-u_{n-2}\\[0.3em]
-u_{n-1}
-     \end{bmatrix}
-  $  ,  $\vec{b}= \begin{bmatrix}
-1          \\[0.3em]
-0 \\[0.3em]
-\vdots\\[0.3em]
-0\\[0.3em]
--2
-     \end{bmatrix}
-  $ 
-  \end{center}
-where $h=\frac{1}{n}$. This discretized ODE was then solved using the Gauss-Jacobi , Gauss-Seidel, and SOR with $n=1000$. 
+  $$
+  
+  These circulant matrices approximate and explain the behavior of Toeplitz matrices and thus are useful as preconditioners for the Preconditioned Conjugate Gradient (PCG) method. In order to understand the properties of circulant matrices, one must look at how their eigenvectors are created. The eigenvalues, $\lambda_k$, and eigenvectors, $\nu_k$  are given by $C_n\nu =\lambda \nu$. This can also be expressed as the $n$ difference equations:
+  $$ \sum\limits_{k=0}^{m-1} c_{n-m+k}\nu_k+\sum\limits_{k=m}^{n-1}c_{k}\nu_{k-(n-m)} =\lambda\nu_m \ \ \ \ \ \  m=0:n-1
+  $$
+  
+  The above can be solved easily and since it is a linear equation with constant coefficients, $\nu_k$ can be replaced with $\nu_k=\rho^k$. This is analogous to $y(t)=e^{st}$ in time invariant differential equations. Substituting in $\rho$ and canceling terms yields:
+    $$ \sum\limits_{k=0}^{n-1-m} c_{k}\rho^k+\rho^{-n}\sum\limits_{k=n-m}^{n-1}c_{k}\rho^k =\lambda
+  $$
+  
+We can see that by choosing values for rho,  the corresponding eigenvectors will fall out. If we choose $\rho=e^{\frac{-2\pi imk}{n}}$, the eigenvector that comes about is:
 
-The A matrix as well as the b and u vectors were created with the following code:
-\lstinputlisting{SetupProb1.m}
-The first algorithm tested was the Gauss-Jacobi method. This is the simplest algorithm to implement and has a simple iteration. The G-J method is computed by the equation: 
-$$x_i^{(k+1)}=\frac{1}{a_{ii}}\bigg(b_i+\sum\limits_{\substack{j=1\\ j\ne i}}^n a_{ij}x_j^{(k)}\bigg) \ \ \ \ \ \ \ \ i=1:n
+$$\nu_m=\frac{1}{\sqrt{n}}\Big(1,e^{\frac{-2\pi im}{n}},\dots,e^{\frac{-2\pi im(n-1)}{n}}\Big)
 $$
-The G-J algorithm can quickly be implemented in just a few lines in Matlab, using Matlab's vector notation. The implementation used for this problem is shown below.
-\lstinputlisting{Jacobi.m}
-The G-J method was run with a number of different convergence criteria to demonstrate the convergence properties of this method. Figure \ref{gj} shows these convergence values. The convergence criteria is defined as $|\vec{x}^{\ (k+1)}-\vec{x}^{\ (k)}|$. When the method is no longer making any significant changes to the $\vec{x}$ values, it has been deemed converged. This is used throughout this homework question as a metric for performance. 
 
-
+The curious thing about this particular value set for $\rho$ is that this is the discrete Fourier Transform (DFT) of the sequence $c_k$. Thus, we can actually recover $c_k$ by taking the inverse DFT of the eigenvalues, $\lambda_k$. Since the circulant matrix is made up of one row of values that have been shifted right as a function of their row number, the eigenvalues of $C_n$ can be found by merely taking the DFT of the first column of $C_n$. This allows one to diagonalize a circulant matrix by the Fourier matrix, $F_n$:
+  
+  $$ C_n =F_n^*\Lambda_nF_n
+  $$
+  where $[F]_{j,k}=\frac{1}{\sqrt{n}}e^{\frac{2\pi ijk}{n}}$ for $0\le j,k\le n-1$ and $\Lambda$ is a diagonal matrix holding the eigenvalues of $C_n$. The DFT operation is extremely efficient  compared to traditional matrix-vector multiplication. Once $\Lambda$ has been obtained, 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+  
+  
+\newpage
 \begin{thebibliography}{9}
 \bibitem{Painless}
- Jonathan Richard Shewchuk,
+J. Shewchuk,
   \emph{An Introduction to the Conjugate Gradient Method Without the Agonizing Pain}.
   Carnegie Mellon University
   1994.
 
+\bibitem{toeplitz}
+R. Gray, 
+  \emph{Toeplitz and Circulant Matrices: A review}.
+ Stanford University
+  2006.
+
+\bibitem{strang}
+G. Strang,
+  \emph{A Proposal for Toeplitz Matrix Calculations}.
+  Stud. Appl. Math., 74(1986), pp171-176.
+  
+  \bibitem{chanAndStrang}
+R. Chan and G. Strang,
+  \emph{Toeplitz Equations by Conjugate Gradients with Circulant Preconditioner}.
+   SIAM J. Sci. Stat. Comput., 10(1989), pp 104-117.
+  
+  \bibitem{Chan}
+T. Chan,  
+  \emph{An Optimal Circulant Preconditioner for Toeplitz Systems}.
+SIAM J. Sci. Stat. Comput. 9(1988) pp 766-771.
 \end{thebibliography}
 
 
