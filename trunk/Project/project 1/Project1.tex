@@ -12,7 +12,9 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{amsmath}
+\usepackage{placeins}
 \usepackage{float}
+\restylefloat{table}
 \lstset { %
     backgroundcolor=\color{black!7}, % set backgroundcolor
     basicstyle=\footnotesize,% basic font setting
@@ -238,7 +240,7 @@ $$
  
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=100mm]{pcg1.png}
+\includegraphics[width=140mm]{pcg1.png}
 \caption{Results of the CG iterative method and the PCG iterative method with a Strang circulant preconditioner.}
 \label{pcg1}
 \end{center}
@@ -246,12 +248,12 @@ $$
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=100mm]{pcg2.png}
+\includegraphics[width=140mm]{pcg2.png}
 \caption{Results of the CG iterative method and the PCG iterative method with a Chan circulant preconditioner.}
 \label{pcg1}
 \end{center}
 \end{figure}
-
+ \FloatBarrier
 The second symmetric Toeplitz system is defined by:
 
 $$ a_k=\frac{1}{2\pi}\int\limits^\pi_{-\pi}f(\theta)e^{-ik\theta}d\theta,\ \ \ \ \ k=0,\pm 1, \pm2, \dots,
@@ -262,7 +264,7 @@ The CG method was once again used as a baseline to compare PCG method with the S
  
  \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=100mm]{pcgB1.png}
+\includegraphics[width=50mm]{pcgB1.png}
 \caption{Results of the CG iterative method and the PCG iterative method with a Strang circulant preconditioner.}
 \label{pcg1}
 \end{center}
@@ -270,14 +272,14 @@ The CG method was once again used as a baseline to compare PCG method with the S
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=100mm]{pcgB2.png}
+\includegraphics[width=50mm]{pcgB2.png}
 \caption{Results of the CG iterative method and the PCG iterative method with a Chan circulant preconditioner.}
 \label{pcg1}
 \end{center}
 \end{figure}
  
  
- 
+ For the 
  
 % \begin{table}[H!]                                
 %\centering                                       
