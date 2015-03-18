@@ -11,8 +11,8 @@ end
 
 x=b; %Set x = b for the first guess.
 r=b-A*x; %find the residual.
-z=CGmethod(B,r);
-% z=(r\B)'; %solve for z
+% z=CGmethod(B,r);
+z=(r\B)'; %solve for z
 p=z;
 r0=norm(r);
 count=0;
@@ -35,8 +35,8 @@ while debugV>tol && count <100000
     ro=r;
     r=r-alpha*q;
     zo=z;
-    z=CGmethod(B,r);
-%     z=(r\B)';%solve for z.
+%     z=CGmethod(B,r);
+    z=(r\B)';%solve for z.
     beta=(z'*r)/(zo'*ro);
     
     p=z+beta*p;
