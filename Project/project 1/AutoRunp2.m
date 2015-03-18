@@ -2,7 +2,7 @@
 %THIS SCRIPT TO SEE THE NUMERICAL METHODS IN ACTION.
 
 clear;
-ex=0:8;
+ex=0:7;
 runs=50*2.^ex; %50,100,200,400,800...
 p=[2,1,1/10,1/100];
 % runs=4;
@@ -26,12 +26,11 @@ cfill2=fliplr(cfill);
 cfill2(1)=[];
 cfill=[cfill,cfill2];
 CS(1,2:end)=cfill;
-        for j=2:length(A)
+diags=diag(A);
+        parfor j=2:length(A)
 %             diagC=CS(j,j);
-            cfillJ=circshift(cfill,j-1,2);
-            CS(j,j+1:end)=cfillJ(j:end);
-            CS(j,1:j-1)=cfillJ(1:j-1);
-    
+            cjJ=circshift(cfill,j-1,2);
+            CS(j,:)=[cjJ(1:j-1),diags(j),cjJ(j:end)];
         end
 %% Crete Chang's method
 
@@ -59,30 +58,30 @@ diags=diag(A);
 %Begin with Strang's method
 
 
-     
-    PCGticS(a,i)=tic;
      a1=ifft(fft(CS(:,1)).^-1)';
      a1s=zeros(length(a1));
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2);
      end
+
+    PCGticS(a,i)=tic;
     [PCGxS,PCGcountS(a,i) ] = PCGmethod( A,b,a1s);
     TpcgS(a,i)=toc(PCGticS(a,i));
 
-    CGtic(a,i)=tic;
-    [CGxS,CGcount(a,i)]=CGmethod(A,b);
-    TcgS(a,i)=toc(CGtic(a,i)); %#ok<*SAGROW>
+%     CGtic(a,i)=tic;
+%     [CGxS,CGcount(a,i)]=CGmethod(A,b);
+%     TcgS(a,i)=toc(CGtic(a,i)); %#ok<*SAGROW>
     
     
 %  Now for Chan's method.
-    a2=CC^-1;
-    PCGticC(a,i)=tic;
+
+    
      a1=ifft(fft(CC(:,1)).^-1)';
      a1s=zeros(length(a1));
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2);
      end
-    
+    PCGticC(a,i)=tic;
     [PCGxC,PCGcountC(a,i) ] = PCGmethod( A,b,a1s);
     TpcgC(a,i)=toc(PCGticC(a,i));
 
