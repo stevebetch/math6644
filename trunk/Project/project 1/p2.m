@@ -46,12 +46,14 @@ diagb=diag(A);
         
 %Begin with Strang's method
       
-     PCGticSB(a,i)=tic;
+     
      a1=ifft(fft(CSb(:,1)).^-1)';
      a1s=zeros(length(a1));
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2);
      end
+     a2=A*a1s;
+     PCGticSB(a,i)=tic;
     [PCGxSB,PCGcountSB(a,i) ] = PCGmethod( A,b,a1s);
     TpcgSB(a,i)=toc(PCGticSB(a,i));
 
@@ -62,12 +64,14 @@ diagb=diag(A);
     
 %  Now for Chan's method.
 
-    PCGticCB(a,i)=tic;
+    
      a1=ifft(fft(CCb(:,1)).^-1)';
      a1s=zeros(length(a1));
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2);
      end
+     a2=A*a1s;
+     PCGticCB(a,i)=tic;
     [PCGxCB,PCGcountCB(a,i) ] = PCGmethod( A,b,a1s);
     TpcgCB(a,i)=toc(PCGticCB(a,i));
 

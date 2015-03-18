@@ -20,10 +20,13 @@ if(norm(r)<tol)
 end
 count=0;
 debugV=r0;
- h=waitbar(0,'CG method');
+
 while debugV>tol && count <100000
     count=count+1;
     if(mod(count,500)==0)
+        if(~exist('h','var'))
+         h=waitbar(0,'CG method');
+        end
          waitbar(1,h,sprintf('%s%d','Running CG! Iteration: ',count));
     end
     
@@ -35,6 +38,9 @@ while debugV>tol && count <100000
     r=ro-alpha*q;
     beta=(r'*r)/(ro'*ro);
     p=r+beta*p;
-    debugV=norm(r);
+    debugV=norm(r)/r0;
 end
-close(h);
+if(exist('h','var'))
+    
+    close(h);
+end
