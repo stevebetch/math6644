@@ -63,28 +63,36 @@ diags=diag(A);
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2);
      end
-% 
+%     a2=a1s*A*a1s';
+%     a3=a2^-1;
+%     if(i>2)
     PCGticS(a,i)=tic;
-    [PCGxS,PCGcountS(a,i) ] = PCGmethod( A,b,a1s);
+    [PCGxS,PCGcountS(a,i) ] = PCGmethod( A,b,a1s,1e-6,0);
     TpcgS(a,i)=toc(PCGticS(a,i));
-
-%     CGtic(a,i)=tic;
-%     [CGxS,CGcount(a,i)]=CGmethod(A,b);
-%     TcgS(a,i)=toc(CGtic(a,i)); %#ok<*SAGROW>
+%     else
+%     PCGticS(a,i)=tic;
+%     [PCGxS,PCGcountS(a,i) ] = PCGmethod( A,b,a1s,1e-6,1);
+%     TpcgS(a,i)=toc(PCGticS(a,i));
+%     end
+% 
+    CGtic(a,i)=tic;
+    [CGxS,CGcount(a,i)]=CGmethod(A,b);
+    TcgS(a,i)=toc(CGtic(a,i)); %#ok<*SAGROW>
     
     
 %  Now for Chan's method.
 % 
 %     
-%      a1=ifft(fft(CC(:,1)).^-1)';
-%      a1s=zeros(length(a1));
-%      parfor j=1:length(A)
-%             a1s(:,j)=circshift(a1,j-1,2);
-%      end
-%     PCGticC(a,i)=tic;
-%     [PCGxC,PCGcountC(a,i) ] = PCGmethod( A,b,a1s);
-%     TpcgC(a,i)=toc(PCGticC(a,i));
-% 
+     a1c=ifft(fft(CC(:,1)).^-1)';
+     a1c=zeros(length(a1c));
+     parfor j=1:length(A)
+            a1c(:,j)=circshift(a1,j-1,2);
+     end
+     
+    PCGticC(a,i)=tic;
+    [PCGxC,PCGcountC(a,i) ] = PCGmethod( A,b,a1c,1e-6,0);
+    TpcgC(a,i)=toc(PCGticC(a,i));
+
 %     CGtic(a,i)=tic;
 %     [CGxC,CGcount(a,i)]=CGmethod(A,b);
 %     Tcg(a,i)=toc(CGtic(a,i));

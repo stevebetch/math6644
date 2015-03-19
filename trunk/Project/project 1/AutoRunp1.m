@@ -25,7 +25,7 @@ Ts(a)=toc(Stic(a));
 % 
 PCGtic(a)=tic;
 A2=S*A*S';
-[PCGx,PCGcount(a) ] = PCGmethod( A2,b,(A2)^-1);
+[PCGx,PCGcount(a) ] = PCGmethod( A2,b,(A2)^-1,1e-6,0);
 Tpcg(a)=toc(PCGtic(a));
 
 CGtic(a)=tic;
