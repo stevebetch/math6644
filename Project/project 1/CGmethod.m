@@ -32,6 +32,7 @@ while debugV>tol && count <100000
     
     q=A*p;
   
+    
     alpha=(r'*r)/(p'*q);
     x=x+alpha*p;
     ro=r;

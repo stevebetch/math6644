@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  17 MAR 2015 21:27
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012) (format=pdflatex 2012.6.30)  18 MAR 2015 20:02
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -364,17 +364,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@floatcapt=\box31
 )
 \@float@every@table=\toks29
- (./Project1.aux
-
-LaTeX Warning: Label `pcg1' multiply defined.
-
-
-LaTeX Warning: Label `pcg1' multiply defined.
-
-
-LaTeX Warning: Label `pcg1' multiply defined.
-
-)
+ (./Project1.aux)
 \openout1 = `Project1.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
@@ -391,7 +381,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 29.
- (/usr/local/texlive/2012/texmf-dist/tex/latex/base/ts1cmr.fd
+(/usr/local/texlive/2012/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 29.
@@ -507,60 +497,82 @@ File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 ) [1
 
 {/usr/local/texlive/2012/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-Underfull \hbox (badness 10000) in paragraph at lines 127--128
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
 
  []
 
-[3] [4] [5]
+[3] [4] [5] <sp2.png, id=36, 528.97626pt x 221.82875pt>
+File: sp2.png Graphic file (type png)
+ <use sp2.png>
+Package pdftex.def Info: sp2.png used on input line 241.
+(pdftex.def)             Requested size: 355.65944pt x 149.14912pt.
 
-LaTeX Warning: Reference `pcg2' on page 6 undefined on input line 239.
+<sp1.png, id=38, 582.175pt x 222.8325pt>
+File: sp1.png Graphic file (type png)
+ <use sp1.png>
+Package pdftex.def Info: sp1.png used on input line 248.
+(pdftex.def)             Requested size: 355.65944pt x 136.13503pt.
+ [6 <./sp2.png> <./sp1.png>] <sp01.png, id=44, 580.1675pt x 223.83624pt>
+File: sp01.png Graphic file (type png)
+ <use sp01.png>
+Package pdftex.def Info: sp01.png used on input line 258.
+(pdftex.def)             Requested size: 355.65944pt x 137.21957pt.
 
-<pcg1.png, id=36, 621.32124pt x 378.41376pt>
-File: pcg1.png Graphic file (type png)
- <use pcg1.png>
-Package pdftex.def Info: pcg1.png used on input line 243.
-(pdftex.def)             Requested size: 398.33858pt x 242.60548pt.
+<sp001.png, id=45, 585.18625pt x 222.8325pt>
+File: sp001.png Graphic file (type png)
+ <use sp001.png>
+Package pdftex.def Info: sp001.png used on input line 265.
+(pdftex.def)             Requested size: 355.65944pt x 135.4346pt.
 
-<pcg2.png, id=38, 611.28375pt x 374.39874pt>
-File: pcg2.png Graphic file (type png)
- <use pcg2.png>
-Package pdftex.def Info: pcg2.png used on input line 251.
-(pdftex.def)             Requested size: 398.33858pt x 243.97328pt.
- [6 <./pcg1.png>]
+<cp2.png, id=46, 550.055pt x 221.82875pt>
+File: cp2.png Graphic file (type png)
+ <use cp2.png>
+Package pdftex.def Info: cp2.png used on input line 276.
+(pdftex.def)             Requested size: 355.65944pt x 143.43553pt.
 
-LaTeX Warning: Reference `pcgB1' on page 7 undefined on input line 263.
+<cp1.png, id=47, 578.16pt x 223.83624pt>
+File: cp1.png Graphic file (type png)
+ <use cp1.png>
+Package pdftex.def Info: cp1.png used on input line 283.
+(pdftex.def)             Requested size: 355.65944pt x 137.69432pt.
+ [7 <./sp01.png> <./sp001.png>] [8 <./cp2.png> <./cp1.png>]
+<cp01.png, id=59, 577.15625pt x 221.82875pt>
+File: cp01.png Graphic file (type png)
+ <use cp01.png>
+Package pdftex.def Info: cp01.png used on input line 293.
+(pdftex.def)             Requested size: 341.43306pt x 131.23322pt.
 
+<cp001.png, id=60, 576.1525pt x 219.82124pt>
+File: cp001.png Graphic file (type png)
+ <use cp001.png>
+Package pdftex.def Info: cp001.png used on input line 300.
+(pdftex.def)             Requested size: 341.43306pt x 130.27367pt.
 
-LaTeX Warning: Reference `pcgB2' on page 7 undefined on input line 263.
+<pcsb.png, id=61, 530.98375pt x 227.85126pt>
+File: pcsb.png Graphic file (type png)
+ <use pcsb.png>
+Package pdftex.def Info: pcsb.png used on input line 321.
+(pdftex.def)             Requested size: 341.43306pt x 146.51616pt.
 
-<pcgB1.png, id=43, 234.8775pt x 371.3875pt>
-File: pcgB1.png Graphic file (type png)
- <use pcgB1.png>
-Package pdftex.def Info: pcgB1.png used on input line 267.
-(pdftex.def)             Requested size: 142.26378pt x 224.94797pt.
-
-<pcgB2.png, id=44, 231.86626pt x 366.36874pt>
-File: pcgB2.png Graphic file (type png)
- <use pcgB2.png>
-Package pdftex.def Info: pcgB2.png used on input line 275.
-(pdftex.def)             Requested size: 142.26378pt x 224.79274pt.
- [7 <./pcg2.png>]
-[8 <./pcgB1.png> <./pcgB2.png>] [9] (./Project1.aux)
+<pccb.png, id=62, 527.9725pt x 226.8475pt>
+File: pccb.png Graphic file (type png)
+ <use pccb.png>
+Package pdftex.def Info: pccb.png used on input line 329.
+(pdftex.def)             Requested size: 341.43306pt x 146.698pt.
+ [9 <./cp01.png> <./cp001.png>] [10 <./pcsb.png> <./pccb.png>] [11] [12] (./Pro
+ject1.aux)
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 5917 strings out of 493488
- 83204 string characters out of 3141326
- 164224 words of memory out of 3000000
- 9112 multiletter control sequences out of 15000+200000
+ 5953 strings out of 493488
+ 83572 string characters out of 3141326
+ 164262 words of memory out of 3000000
+ 9142 multiletter control sequences out of 15000+200000
  12974 words of font info for 49 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
- 48i,10n,42p,1528b,997s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 48i,10n,42p,1274b,997s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
 }{/usr/local/texlive/2012/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/te
 xlive/2012/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/tex
@@ -581,10 +593,10 @@ s/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2012/texmf-dist/fonts/
 type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2012/texmf-dist/fonts/t
 ype1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2012/texmf-dist/fonts/typ
 e1/urw/courier/ucrr8a.pfb>
-Output written on Project1.pdf (9 pages, 326587 bytes).
+Output written on Project1.pdf (12 pages, 429455 bytes).
 PDF statistics:
- 117 PDF objects out of 1000 (max. 8388607)
- 79 compressed objects within 1 object stream
+ 138 PDF objects out of 1000 (max. 8388607)
+ 85 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

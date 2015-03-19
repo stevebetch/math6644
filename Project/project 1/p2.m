@@ -54,7 +54,7 @@ diagb=diag(A);
      end
      a2=A*a1s;
      PCGticSB(a,i)=tic;
-    [PCGxSB,PCGcountSB(a,i) ] = PCGmethod( a2,b,a1s);
+    [PCGxSB,PCGcountSB(a,i) ] = PCGmethod( A,b,a1s,1e-6,0);
     TpcgSB(a,i)=toc(PCGticSB(a,i));
 
     CGticB(a,i)=tic;
@@ -70,14 +70,14 @@ diagb=diag(A);
      parfor j=1:length(A)
             a1s(:,j)=circshift(a1,j-1,2);
      end
-     a2=A*a1s;
+%      a2=A*a1s;
      PCGticCB(a,i)=tic;
-    [PCGxCB,PCGcountCB(a,i) ] = PCGmethod( a2,b,a1s);
+    [PCGxCB,PCGcountCB(a,i) ] = PCGmethod( A,b,a1s,1e-6,0);
     TpcgCB(a,i)=toc(PCGticCB(a,i));
 
-    CGBtic(a,i)=tic;
-    [CGxCB,CGcount(a,i)]=CGmethod(A,b);
-    TcgCB(a,i)=toc(CGticB(a,i));
+%     CGBtic(a,i)=tic;
+%     [CGxCB,CGcount(a,i)]=CGmethod(A,b);
+%     TcgCB(a,i)=toc(CGticB(a,i));
 %     
 
     end
