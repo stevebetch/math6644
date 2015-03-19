@@ -35,10 +35,10 @@
 $$\begin{cases} -u'' =2x-\frac{1}{2}& \ \ x\in [0,1] \\ u(0)=1, & u(1)=-1 \end{cases}
 $$
 by centered difference scheme with n interior mesh points. Solve the resulting linear system by Conjugate Gradient (CG), Preconditioned CG with Sine transform to construct the preconditioner.}
-
-The one-dimensional equation given above can be solved with numeral method analysis or directly as a function of x. The solved equation then can be used to check the validity of the numerical methods. When solved directly, the equation becomes:
-$$u(x) = -0.333333 x^3+0.25 x^2-1.91667 x+1
-$$
+%
+%The one-dimensional equation given above can be solved with numeral method analysis or directly as a function of x. The solved equation then can be used to check the validity of the numerical methods. When solved directly, the equation becomes:
+%$$u(x) = -0.333333 x^3+0.25 x^2-1.91667 x+1
+%$$
 
 
 The discretized one-dimensional equation above was solved by the central difference scheme with $n$ interior points. The resulting problem is then an $(n+2)\times (n+2)$ matrix, A, and $(n+2)\times 1$ vectors, x and b. The problem was solved using both the Conjugate Gradient (CG) method and the Preconditioned CG method with a Sine transform preconditioner, $S$. The $S$ matrix was defined as:
@@ -46,7 +46,7 @@ The discretized one-dimensional equation above was solved by the central differe
 $$[S]_{j,k}=\sqrt{\frac{2}{n+1}}sin\Big(\frac{\pi jk}{n+1}\Big)
 $$
 
-The A matrix formed from the discretized equation forms a tridiagonal matrix, with elements directly on the primary diagonal as well as elements one diagonal above and below the primary diagonal. This sparse matrix was then run with the Conjugate Gradient(CG) method. The CG method is one of the most prominent iterative methods for solving sparse matrices as it converges much more quickly than other iterative methods such as steepest descent. The Conjugate Gradient iterates in such a way that each new residual is orthogonal to all the previous residuals and search directions. Each new search direction is constructed is A-orthogonal to all the previous residuals and search directions, thus using the Krylov subspace to iterate more efficiently. The CG method was run with $n$ interior points from 256 to 16384. As the values of $n$ increased, the time necessary to complete the iteration increased proportionally. The final results of the CG method can be found in Figure \ref{p1}.  Figure \ref{final} shows the CG method approaching After the CG method completed, the $S$ matrix, used in the PCG method, was formed. 
+The A matrix formed from the discretized equation forms a tridiagonal matrix, with elements directly on the primary diagonal as well as elements one diagonal above and below the primary diagonal. This sparse matrix was then run with the Conjugate Gradient(CG) method. The CG method is one of the most prominent iterative methods for solving sparse matrices as it converges much more quickly than other iterative methods such as steepest descent. The Conjugate Gradient iterates in such a way that each new residual is orthogonal to all the previous residuals and search directions. Each new search direction is constructed is A-orthogonal to all the previous residuals and search directions, thus using the Krylov subspace to iterate more efficiently. The CG method was run with $n$ interior points from 256 to 16384. As the values of $n$ increased, the time necessary to complete the iteration increased proportionally. The final runtimes of the CG method can be found in Figure \ref{p1}. The CG method was able to converge in roughly $\frac{n}{2}$ iterations for the given problem set. While the iterations increase by a factor of $\frac{n}{2}$, the runtime increased at a rate closer to $n^3$. Thus, as the size of the matrix increases, the runtime grows larger at a much faster rate than the number of iterations required to converge. After the CG method completed, the $S$ matrix, used in the PCG method, was formed. 
 
 %\begin{figure}[!h]
 %\begin{center}
@@ -56,7 +56,7 @@ The A matrix formed from the discretized equation forms a tridiagonal matrix, wi
 %\end{center}
 %\end{figure}
 
-The $S$ matrix was formed in two different ways to determine the most efficient method. The first method was using Matlab's vector math and \mcode{parfor} to form the matrix in parallel. This was achieved with the following code:
+The $S$ matrix was formed in two different ways to determine the most efficient method. The first method was using Matlab's vector math and \mcode{parfor} to form the matrix in parallel. The parallel code was used was:
 
 \begin{lstlisting}
 k=1:runs(a); %generates a vector from 1 to the length of n. 
@@ -66,7 +66,7 @@ parfor j=1:runs(a)  %Parallel for loop in matlab
 end
 \end{lstlisting}
 
-This code was run with 4 workers in parallel, allowing for a theoretical 4x improvement over the serial code. Figure \ref{parfor} shows the runtime for the parallel code vs serial code.  As is common with parallel code, for small values of $n$, the serial code outperforms the parallel. However, for larger $n$ values, the 4x speedup is achieved. The $S$ matrix then was formed using Matlab's Discrete Sine Transform(DST) command, \mcode{dst(x)}. Figure \ref{parfor} shows the runtime for the built in DST command which proved to be slower than the parallel code. Thus for the remainder of this portion of the project, the parallel code was used. 
+This code was run with 4 workers in parallel, allowing for a theoretical 4x improvement over the serial code. Generating the S matrix has a great deal of potential parallelism, known as parallel slack, that can be exploited by a multicore system. Figure \ref{parfor} shows the runtime for the parallel code vs serial code.  As is common with parallel code, for small values of $n$, the serial code outperforms the parallel. However, for larger $n$ values, the 4x speedup is achieved. The $S$ matrix then was formed using Matlab's Discrete Sine Transform(DST) command, \mcode{dst(x)}. Figure \ref{parfor} shows the runtime for the built in DST command which proved to be slower than the parallel code. Thus for the remainder of this portion of the project, the parallel code was used when possible. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -213,7 +213,7 @@ $$
 which for a symmetric $4\times4$ matrix would look like:
 
    $$
-C_{strang} = \begin{bmatrix}
+C_{chan} = \begin{bmatrix}
 c_0& \alpha& c_{2} &\alpha   \\[0.3em]
 \alpha& c_{0}&  \alpha&  c_2      \\[0.3em]
 c_{2}& \alpha& c_0 &   \alpha   \\[0.3em]
@@ -221,11 +221,11 @@ c_{2}& \alpha& c_0 &   \alpha   \\[0.3em]
      \end{bmatrix}
   $$
 
- where $\alpha=\frac{3a_1+a_3}{4}$. For larger matrices the value of $\alpha$ will change to follow the above set of rules. Unlike the Strang circulant, the information from $a_3$ is not lost, but is incorporated in via the $\alpha$ term. This is important as it allows this particular circulant to better mimic the original $A$ matrix. This averaging term allows the spectrum of $C^{-1}A$ to lie completely within that of the Strang circulant and hence have a smaller condition number. 
+ where $\alpha=\frac{3a_1+a_3}{4}$. For larger matrices the value of $\alpha$ will change to follow the above set of rules. Unlike the Strang circulant, the information from $a_3$ is not lost, but is incorporated in via the $\alpha$ term. This is important as it allows this particular circulant to better mimic the original $A$ matrix. This averaging term allows the spectrum of $C^{-1}A$ to lie completely within that of the Strang circulant and hence potentially have a smaller condition number. 
  
  As the Chan circulant has the same eigenvalue properties as the Strang circulant, it can be inverted using the same code as presented above. Once inverted, the circulant can then be passed to the Preconditioned Conjugate Gradient method for processing. 
  
- The Preconditioned Conjugate Gradient method is nearly identical to the Conjugate Gradient method. In fact, they share ~95\% of the same code. The only real difference is in the preconditioner that is applied to the matrix $A$ and the creation and use of a $z$ parameter. The PCG method utilizes the stability of the CG method and  attempts to further speed it up with a preconditioner. The role of the preconditioner in this process is to reduce the condition number of the problem so that it may be solved more readily. Iterative methods such as the PCG and CG methods are most suited for use with sparse matrices. If $A$ is dense, it may be more worthwhile to attempt gaussian elimination, unless a proper preconditioner can be found. If a preconditioner, $C$ can be found that diagonalizes the dense matrix $A$ then the much faster PCG method can be employed. 
+ The Preconditioned Conjugate Gradient method is nearly identical to the Conjugate Gradient method. In fact, they share ~95\% of the same code. The only real difference is in the preconditioner that is applied to the matrix $A$ and the creation and use of a $z$ parameter. The PCG method utilizes the stability of the CG method and  attempts to further speed it up with a preconditioner. The role of the preconditioner in this process is to reduce the condition number of the problem so that it may be solved more readily. Iterative methods such as the PCG and CG methods are most suited for use with sparse matrices. If $A$ is dense, it may be more worthwhile to attempt gaussian elimination, unless a proper preconditioner can be found. If a preconditioner, $C$, can be found that diagonalizes the dense matrix $A$ then the much faster PCG method can be employed. 
  
  For this project, both the Strang ($C_s$) and the Chan ($C_c$) circulant matrices were used to condition two different $A$ matrices. The solution to $A\vec{x}=\vec{b}$ was then solved with the CG and PCG method and the results were compared. The first symmetric Toeplitz system solved was defined as:
  
@@ -234,7 +234,9 @@ $$
  
  where $a_k$ is the lower triangular portion of $A_n$. Each $A$ matrix generated for this case was tested to see if it maintained its symmetric positive definite (SPD) characteristics. This was done by checking the eigenvalues of the system for each $p$ value. Even for $p\le1$, this system did remain SPD. 
  
- For each value of $p$, an $n\times n$ $A$ was generated, where the value of $n$ were set to $n=50$, $100$, $200$, $400$, $800$, $3200$, $6400$. Thus, for each value of $p$, 8 different $A$ matrices were solved, generating a total of 32 solutions per iterative method tested. The value of $\vec{b}$ for these systems was generated by a random number generator and changed for each iteration.  To evaluate the performance of each iterative method, the wall clock time required to solve the system of equations was evaluated. Unfortunately, Matlab is unable to easily collect FLOPS statistics for a given time and wall clock time was required to be used for comparison. The CG method was used as a baseline to compare PCG method with the Strang preconditioner and the Chan preconditioner. The results for the CG method are interleaved into the  results for the two PCG methods, for easy of comparison. The PCG method using the Strang preconditioner is found in Figures \ref{sp2}, \ref{sp1}, \ref{sp01}, and \ref{sp001}. The PCG method used the inverse of the Strang preconditioner, $C_s^{-1}$, as the actual preconditioning matrix for this problem. Using the inverse of the $C_s$ matrix results in drastically faster convergence rates for the PCG method. 
+ For each value of $p$, an $n\times n$ $A$ was generated, where the value of $n$ were set to $n=50$, $100$, $200$, $400$, $800$, $1600$,$3200$. Thus, for each value of $p$, 7 different $A$ matrices were solved, generating a total of 28 solutions per iterative method tested. The value of $\vec{b}$ for these systems was generated by a random number generator and changed for each iteration.  To evaluate the performance of each iterative method, the wall clock time required to solve the system of equations was evaluated. Unfortunately, Matlab is unable to easily collect FLOPS statistics for a given function and wall clock time was required to be used for comparison.
+ 
+ The CG method was used as a baseline to compare PCG method with the Strang preconditioner and the Chan preconditioner. The results for the CG method are interleaved into the  results for the two PCG methods, for easy of comparison. The PCG method using the Strang preconditioner is found in Figures \ref{sp2}, \ref{sp1}, \ref{sp01}, and \ref{sp001}. The PCG method used the inverse of the Strang preconditioner, $C_s^{-1}$, as the actual preconditioning matrix for this problem. Using the inverse of the $C_s$ matrix results in drastically faster convergence rates for the PCG method. 
  
 \begin{figure}[htbp]
 \begin{center}
@@ -243,6 +245,7 @@ $$
 \label{sp2}
 \end{center}
 \end{figure}
+
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=125mm]{sp1.png}
@@ -251,7 +254,7 @@ $$
 \end{center}
 \end{figure}
 
-As can be seen in Figures \ref{sp2} and \ref{sp1}, for small values of $n$, and for the better conditioned matrices ($p=2$,$p=1$) the CG method is actually marginally more efficient then the PCG method, when looking at runtimes. However, when comparing the PCG number of iteration necessary to converge, the numbers are somewhat striking. The number of iterations required to converge for the PCG method was significantly less than the CG method. As the $p$ value used in the creation of the $A$ matrix decreases, the CG method rapidly loses its advantage and the PCG method becomes more efficient. Figures \ref{sp01} and \ref{sp001} show how the number of iterations required for the CG method to converge increases. Unlike the CG method, with the Strang preconditioner, the PCG method remains quite stable in the number of iterations required.  This stability allows for the runtimes of the method to also remain small. 
+As can be seen in Figures \ref{sp2} and \ref{sp1}, for small values of $n$, and for the better conditioned matrices ($p=2$,$p=1$) the CG method is actually marginally more efficient then the PCG method, when only considering runtimes. However, when comparing the PCG number of iteration necessary to converge, the numbers are somewhat striking. The number of iterations required to converge for the PCG method was significantly less than the CG method. As the $p$ value used in the creation of the $A$ matrix decreases, the CG method rapidly loses its advantage but the PCG method retains its relatively quick convergence times. Figures \ref{sp01} and \ref{sp001} show how the number of iterations required for the CG method to converge increases. Unlike the CG method, the PCG method, with the Strang preconditioner, remains quite stable in the number of iterations required.  This stability allows for the runtimes of the method to also remain small. 
 
 \begin{figure}[htbp]
 \begin{center}
@@ -312,7 +315,8 @@ The second symmetric Toeplitz system is defined by:
 
 $$ a_k=\frac{1}{2\pi}\int\limits^\pi_{-\pi}f(\theta)e^{-ik\theta}d\theta,\ \ \ \ \ k=0,\pm 1, \pm2, \dots,
 $$
-where $f(\theta)=\theta^4 +1$ for $-\pi\le\theta\le\pi$. This means that $a_k$ is the Fourier coefficients of $f(\theta)$ and were computed via FFT. For the second system, the PCG and CG method were each run for the 6 different values of $n$ only. Once again, the CG method was compared to the PCG method with Chan's preconditioner and Strang's preconditioner. For this new $A$ matrix based upon the Fourier coefficients of
+where $f(\theta)=\theta^4 +1$ for $-\pi\le\theta\le\pi$. This means that $a_k$ is the Fourier coefficients of $f(\theta)$ and were computed via FFT. For the second system, the PCG and CG method were each run for the 6 different values of $n$ only. Once again, the CG method was compared to the PCG method with Chan's preconditioner and Strang's preconditioner. 
+For this new $A$ matrix based upon the Fourier coefficients of $f(\theta)$. These coefficients were generated by first creating an array of $f(\theta)$ values, and then performing a FFT on the values. The result was an array of complex values that were then used to generate the $A$ matrix. Once the $A$ matrix had been formed, Chan and Strang's circulant matrices were generated. In order to achieve fast convergence rates, the A matrix was preconditioned with each of these circulant matrices. The final preconditioned matrix passed to the PCG method was $C_nAC_n'$ and the matrix used in the PCG calculation was $(C_nAC_n')^{-1}$. Figures \ref{pcgB1} and \ref{pcgB2} show the final runtimes and number of iterations used by each method. 
 
  
  \begin{figure}[htbp]
@@ -322,7 +326,9 @@ where $f(\theta)=\theta^4 +1$ for $-\pi\le\theta\le\pi$. This means that $a_k$ i
 \label{pcgB1}
 \end{center}
 \end{figure}
-
+ As can be seen in Figures \ref{pcgB1} and \ref{pcgB2}, the PCG method greatly outpaces the CG method in both runtime and number of iterations required to converge. However, once again the Chan and Strang circulant preconditioners are roughly equivalent. Both methods are able to converge within one iteration and both methods are able to handle the large matrices without issue. A brief analysis of the runtimes show that the $\approx$ \bigo($n\,log\,n$) growth rate discussed above is maintained with the second symmetric Toeplitz system analyzed here. 
+ 
+ 
 \begin{figure}[htbp]
 \begin{center}
 \includegraphics[width=120mm]{pccb.png}
@@ -331,9 +337,8 @@ where $f(\theta)=\theta^4 +1$ for $-\pi\le\theta\le\pi$. This means that $a_k$ i
 \end{center}
 \end{figure}
  
- 
 
- 
+ For this project, the Conjugate Gradient method and Preconditioned Conjugate Gradient method were compared and contrasted for multiple problems. The effects of different circulant matrices were explored it was found that for the given trade space of problems, Chan's preconditioner and Strang's preconditioner were both equally effective. Regardless of this relative equality, the implications of this project are quite clear. If a proper preconditioner matrix is able to be constructed, the PCG method can solve a large, complex system of equations extremely quickly and effiencently. 
 % \begin{table}[H!]                                
 %\centering                                       
 %\begin{tabular}{|c|c|c|c|c|c|}                     
