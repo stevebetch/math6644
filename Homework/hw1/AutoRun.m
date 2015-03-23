@@ -9,10 +9,11 @@ w=0.98;
 for i=1:6
     waitbar(i/6,h,sprintf('%s%d%s','Running! ',i,' of 6 running!'));
 val(:,i)=1/(10^i);
-[xJ(:,i),countJ(i)]=Jacobi(A,b,val(i));
-[xGS(:,i),countGS(i) ] = GS( A,b,val(i) );
-[xSOR(:,i),countSOR2(i)]=SOR(A,b,val(i),w);
-
+% [xJ(:,i),countJ(i)]=Jacobi(A,b,val(i));
+% [xGS(:,i),countGS(i) ] = GS( A,b,val(i) );
+% [xSOR(:,i),countSOR2(i)]=SOR(A,b,val(i),w);
+[CGx(:,i),CGcount(i)]=CGmehtod(A,b,val(i));
+[PCGx(:,i),PCGcount(i) ] = PCGmehtod( A,b,eye(1000),val(i));
 end
 close(h);
 
