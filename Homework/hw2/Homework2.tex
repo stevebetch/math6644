@@ -173,15 +173,17 @@ Because the Chord method is linear, the quadratic term in the  denominator chang
 \vec{r}&=||F(\vec{x})|| &\ \ \ \ N^2\ FLOPS\\
 F_x&=\vec{r} & N\ FLOPS\ for\ an\ assignment\\
 J&=F'(\vec{x}) &\ \ N\ FLOPS\\
-L,U&\ decomposition\ of\ J& \ \frac{N^3}{3}\ FLOPS for Cholesky factorization
+L,U\ decomposition&\ of\ J& \ \frac{N^3}{3}\ FLOPS\ for\ Cholesky\ factorization\\
 While\ ||F_x||&>\tau_r\vec{r}+\tau_a &\ \ \ n\ iterations\\
-L\vec{y}&=-F(\vec{x}) &\\Forward\ Substitution\ N^2\ FLOPS
-U\vec{s}&=\vec{y} &\ Back\ Substitution\ N^2\ FLOPS
+L\vec{y}&=-F(\vec{x}) &Forward\ Substitution\ N^2\ FLOPS\\
+U\vec{s}&=\vec{y} &\ Back\ Substitution\ N^2\ FLOPS\\
 \vec{x}&=\vec{x}+\vec{s}&\ \ \ \ N\ FLOPS\\
 F_x& =F(\vec{x}) & N^2\ FLOPS\\
 end\\
 \end{align*}
-Once again, the cost per iteration is dependent on how $\vec{s}$ is solved. Because the $L,U$ decomposition has been calculated prior to the start of the iteration section, the cost is only incurred once. While \bigo($\frac{N^3}{3}$) is the worst-case for decomposing the Jacobian, in reality, this value is dependent on the sparsity of the matrix. If the Jacobian is very sparse, the cost for decomposing it will be much smaller. Inside the iteration section, the $\vec{s}$ was solved using the  
+Once again, the cost per iteration is dependent on how $\vec{s}$ is solved. Because the $L,U$ decomposition has been calculated prior to the start of the iteration section, the cost is only incurred once. While \bigo($\frac{N^3}{3}$) is the worst-case for decomposing the Jacobian, in reality, this value is dependent on the sparsity of the matrix. If the Jacobian is very sparse, the cost for decomposing it will be much smaller. Inside the iteration section, the $\vec{s}$ was solved using forward and backward substitution, but they could be easily calculated using two sequential Conjugate Gradient calls. 
+
+The total cost of using the Chord method with Cholesky factorization of the Jacobian and Forward/Backward substitution is \bigo$((\frac{N^3}{3} +N^2 +2N)+(\frac{log(\epsilon)}{log(k||e_0||)}+1)(3N^2+N))$ FLOPS. This method, compared to Newton's method, has the potential for costing significantly more FLOPS to converge to a solution. However, if the Jacobian is extremely costly to evaluate, the Chord method has the advantage of only evaluating it once. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section*{Question 5}
 %{\it Discreteize the following differential equation:
