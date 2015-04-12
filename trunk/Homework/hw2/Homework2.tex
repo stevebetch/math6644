@@ -121,20 +121,67 @@ For Function b, once again, all three methods converged to the same point, as se
 \end{center}
 \end{figure}
 
- However, the Chord and Secant methods both had issues converging on Function c due to its periodic motion, as can be seen in Figures \ref{xvals},\ref{count}, and \ref{f3}. While Newton's method did find a point where $F(x)=0$, this was by no means the closest zero point. The Secant method diverged the fastest from the true solution, quickly reaching an x value equal to $10^16$ and causing a buffer overflow. 
+ The Chord and Secant methods both had issues converging on Function c due to its periodic motion, as can be seen in Figures \ref{xvals},\ref{count}, and \ref{f3}. While Newton's method did find a point where $F(x)=0$, this was by no means the closest zero point. The Secant method diverged the fastest from the true solution, quickly reaching an x value equal to the computational precision of Matlab, which is $2^53$. At this point, the method is still working, but Matlab is unable to correctly calculate the next step. When $a_n$ is being calculated, a divide-by-0 error occurs and the program exits. The Secant method works by approximating the derivative, $F'(x)$ by using the previous step's $x$ and $F(x)$ values. However, with a periodic function, errors in the derivative can and will send the function off in an incorrect direction. If any $x$ point is closest to to an extreme on the y-axis, the Secant --- and Chord Method for that matter --- will go careening off into the distance. This doesn't mean that they won't eventually converge, but if they do it will be at a $F(x)=0$ far from the start point.
 \FloatBarrier
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Question 3}
-{\it Assume that the standard assumptions hold, that the cost of a function evaluation is \bigo($N^2$) floating-point operations, the cost of a Jacobian is \bigo($N$) function evaluations, and that $x_0$ is near enough to $x$ so that the Newton iteration converges quadratically to $x$. Estimate what is the number of iteration needed to obtain $||e_n||\le||e_0||$, where $\epsilon$ is a small tolerance value. What is the number of floating point operations required to get this accuracy?}\newline
+{\it Assume that the standard assumptions hold, that the cost of a function evaluation is \bigo($N^2$) floating-point operations, the cost of a Jacobian is \bigo($N$) function evaluations, and that $x_0$ is near enough to $x$ so that the Newton iteration converges quadratically to $x$. Estimate what is the number of iteration needed to obtain $||e_n||\le\epsilon||e_0||$, where $\epsilon$ is a small tolerance value. What is the number of floating point operations required to get this accuracy?}\newline
 
 
+Newton's Method converges quadratically to $x$ and the error of the function is governed by the equation:
+$$||x_{n+1}-x^*||\le k||x_n-x^*||^2
+$$
+where $x^*$ is the solution, k is a constant, and $x_n,\ x_{n+1}$ are the values of $x$ at steps $n$ and $n+1$. Since $x^*$ is the solution, $x_n-x^*$ can be written as:
+$$||e_{n+1}||\le k||e_{n}||^2\le(k||e_{n-1}||^2)^2\le\dots
+$$
+We know from these equations and the problem statement that the Newton iteration converges quadratically and that the norm of the error is dependent upon the previous step's error. Thus, to get to $x_n$, the error has converged by $
+(k||x_0-x^*||^{2})^n=||e_n||$. The number of iterations necessary to get to the $\epsilon$ tolerance is:
+$$\frac{e_n}{e_0}=(k||x_0-x^*||^2)^{n-1}=\epsilon
+$$
+$$n=\frac{log(\epsilon)}{log(k||e_0||^2)}+1
+$$
+
+
+Assuming that evaluating the function, $F(x)$ costs \bigo($N^2$) FLOPS and evaluating the Jacobian is only \bigo($N$) FLOPS, the number of of FLOPS required to get to an accuracy of $ \epsilon$ can be calculated. The breakdown of the FLOPS cost per step for Newton's method is given below:
+\begin{align*}
+\vec{r}&=||F(\vec{x})|| &\ \ \ \ N^2\ FLOPS\\
+F_x&=\vec{r} & N\ FLOPS\ for\ an\ assignment\\
+While\ ||F_x||&>\tau_r\vec{r}+\tau_a &\ \ \ n\ iterations\\
+J&=F'(\vec{x}) &\ \ N\ FLOPS\\
+\vec{s}&=-F(\vec{x})(F'(\vec{x}))^{-1} &Depends\ on\ how\ \vec{s}\ is\ solved.\ See\ Below\\
+\vec{x}&=\vec{x}+\vec{s}&\ \ \ \ N\ FLOPS\\
+F_x& =F(\vec{x}) & N^2\ FLOPS\\
+end\\
+\end{align*}
+The cost per iteration for Newton's method is highly dependent upon how $\vec{s}$ is solved. From Homework 1, we know that the Conjugate Gradient method requires $\approx$ \bigo($160N$) FLOPS to reduce the error of the solver by a factor of $10^{-3}$. This value will be used as a rough estimate for the remained of this problem. Thus, adding up all of the FLOPS, it requires \bigo($N^2$) FLOPS to set up the problem, and \bigo($N^2+162N$) FLOPS per $n$ iterations. To get to the $\epsilon$ accuracy, it would take \bigo($(\frac{log(\epsilon)}{log(k||e_0||^2)}+1)(N^2+162N)+N^2$) FLOPS.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Question 4}
 {\it Answer the questions in the previous problem for the chord method.}\newline
-
-
-
+Much of the previous problem's analysis carries over for this problem. One of the main differences between the Chord method and Newton's method is the Chord method converges at a linear rate in the area local to the solution. Because of this, the error equation presented in Problem 3 above changes to:
+$$\frac{e_n}{e_0}=(k||x_0-x^*||)^{n-1}=\epsilon
+$$
+$$n=\frac{log(\epsilon)}{log(k||e_0||)}+1
+$$
+Because the Chord method is linear, the quadratic term in the  denominator changes into a linear term. Assuming that evaluating the function, $F(x)$ costs \bigo($N^2$) FLOPS and evaluating the Jacobian is only \bigo($N$) FLOPS, the number of of FLOPS required to get to an accuracy of $ \epsilon$ can be calculated. The breakdown of the FLOPS cost per step for the Chord method is given below:
+\begin{align*}
+\vec{r}&=||F(\vec{x})|| &\ \ \ \ N^2\ FLOPS\\
+F_x&=\vec{r} & N\ FLOPS\ for\ an\ assignment\\
+J&=F'(\vec{x}) &\ \ N\ FLOPS\\
+L,U&\ decomposition\ of\ J& \ \frac{N^3}{3}\ FLOPS for Cholesky factorization
+While\ ||F_x||&>\tau_r\vec{r}+\tau_a &\ \ \ n\ iterations\\
+L\vec{y}&=-F(\vec{x}) &\\Forward\ Substitution\ N^2\ FLOPS
+U\vec{s}&=\vec{y} &\ Back\ Substitution\ N^2\ FLOPS
+\vec{x}&=\vec{x}+\vec{s}&\ \ \ \ N\ FLOPS\\
+F_x& =F(\vec{x}) & N^2\ FLOPS\\
+end\\
+\end{align*}
+Once again, the cost per iteration is dependent on how $\vec{s}$ is solved. Because the $L,U$ decomposition has been calculated prior to the start of the iteration section, the cost is only incurred once. While \bigo($\frac{N^3}{3}$) is the worst-case for decomposing the Jacobian, in reality, this value is dependent on the sparsity of the matrix. If the Jacobian is very sparse, the cost for decomposing it will be much smaller. Inside the iteration section, the $\vec{s}$ was solved using the  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section*{Question 5}
 %{\it Discreteize the following differential equation:

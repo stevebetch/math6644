@@ -13,10 +13,12 @@ numIts=0;
 while norm(fx,inf)>rtol*r0+atol && numIts<maxIt
     numIts=numIts+1;
     
-  
+  if(numIts==633)
+      disp('');
+  end
     
     a=(fx-fhandle(x0))/(x-x0);
-    
+    xn=x0;
     x0=x;
     x=x0-fx/a;
     fx=fhandle(x);
