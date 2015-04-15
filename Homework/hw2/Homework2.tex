@@ -36,13 +36,40 @@
 \section*{Question 1}
  {\it Can the performance of the Newton iteration be improved by a linear change of variables? That is, for nonsingular $N\times N$ matrices $A$ and $B$, can the Newton iterates for $F(x) = 0$ and $AF(Bx) = 0$ show any performance difference when started at the same initial iterate? What about the chord method?}\newline
 
-A linear change of variables is a technique used to reduce a difficult to a simpler one. This is commonly done by substituting values or expressions for ones that depend on other variables. By reducing the number of dependent variables in a set of expressions, the corresponding $N\times N$ $A$ matrix becomes more sparse. For a given Newton iterate, $F(x)=0$, the nonsingular $A$ and $B$ matrices can be used to modify the sparsity of the iterates, given by $AF(Bx)=0$, to make them easier to evaluate. This would be beneficial to Newton's method as a more sparse iterate makes evaluating the Jacobian less expensive. With Newton's method, both the iterate, $AF(Bx_n)$ and the corresponding Jacobian are evaluated with each iteration. Thus, if they can be made less costly to evaluate, a performance increase can be expected. However, this performance increase will not be as pronounced in other methods, such as the Chord Method.
+A linear change of variables is a technique used to reduce a difficult to a simpler one. This is commonly done by substituting values or expressions for ones that depend on other variables. By reducing the number of dependent variables in a set of expressions, the corresponding $N\times N$ $A$ matrix becomes more sparse. For a given Newton iterate, $F(x)=0$, the nonsingular $A$ and $B$ matrices can be used to modify the sparsity of the iterates, given by $AF(Bx)=0$, to make them easier to evaluate. This would be beneficial to Newton's method as a more sparse iterate makes evaluating the Jacobian less expensive. With Newton's method, both the iterate, $AF(Bx_n)$ and the corresponding Jacobian are evaluated with each iteration. Thus, if they can be made less costly to evaluate, a performance increase can be expected. However, the degree of sparsity and resulting performance increase must offset the cost of the extra matrix-vector multiplications, which may quickly and completely offset the gains mentioned above. The other way the performance of Newton's method could be expected to increase is from a reduction in the number iterations necessary to converge. In order to evaluate this, we must first look at Newton's equation.
 
-The Chord method evaluates the Jacobian matrix once, prior the the iteration section of the code. The remainder of the code uses a set LU-decomposed version of the Jacobian to iterate to a solution. Since the Jacobian does not change over the life of the Chord method, only as small performance increase would be realized. 
 
+Newton's Method converges quadratically to $x$ and the error of the function is governed by the equation:
+$$||\vec{x}_{n+1}-\vec{x}_n|| = ||-(F'(\vec{x}_n))^{-1}F(\vec{x}_n)||
+$$
+Substituting in $A$ and $B$ into the above equation, we get:
+
+$$||\vec{x}_{n+1}-\vec{x}_n|| = ||-(ABF'(B\vec{x}_n))^{-1}AF(\vec{Bx}_n)||
+$$
+Since we know that the $A$ matrix is non-singular, the $A$ and $A^{-1}$ will cancel. We also know that $||(F'(\vec{x}_n))^{-1}F(\vec{x}_n)||$ is a good estimator for $||\vec{x}_n-\vec{x}^*||$, we can write the above equation as:
+$$||B^{-1}(B\vec{x}_{n+1}-B\vec{x}^*)||\le k||B^{-1}(B\vec{x}_n-B\vec{x}^*)||^2
+$$
+where $\vec{x}^*$ is the solution, k is a constant, and $\vec{x}_n,\ \vec{x}_{n+1}$ are the values of $\vec{x}$ at steps $n$ and $n+1$.  At this point we note that the $B$ and $B^{-1}$ matrices cancel and any potential impact upon the convergence rate is nullified. From this analysis, Newton's method's convergence rate will not benefit from a linear change of variables. An almost identical analysis of the Chord method yields the answer to potential performance increases.
+
+The Chord method evaluates the Jacobian matrix once, prior the the iteration section of the code. The remainder of the code uses a set LU-decomposed version of the Jacobian to iterate to a solution. Since the Jacobian does not change over the life of the Chord method, only as small performance increase would be realized. The chord method is also governed by the equation:
+$$||\vec{x}_{n+1}-\vec{x}_n|| = ||-(F'(\vec{x}_n))^{-1}F(\vec{x}_n)||
+$$
+Substituting in $A$ and $B$ into the above equation, we get:
+
+$$||\vec{x}_{n+1}-\vec{x}_n|| = ||-(ABF'(B\vec{x}_0))^{-1}AF(\vec{Bx}_n)||
+$$
+Since we know that the $A$ matrix is non-singular, the $A$ and $A^{-1}$ will once again cancel. Using the fact that $||(F'(\vec{x}_0))^{-1}F(\vec{x}_n)||$ is a good estimator for $||\vec{e}_n||\ ||\vec{e}_0||=||\vec{x}_n-\vec{x}^*||\ ||\vec{x}_0-\vec{x}^*||$, we get:
+$$||B^{-1}(B\vec{x}_{n+1}-B\vec{x}^*)||\le k||B^{-1}(B\vec{x}_0-B\vec{x}^*)||\ ||B^{-1}(B\vec{x}_n-B\vec{x}^*)||
+$$
+Once again, the non-singular $B$ matrices cancel and have no impact upon the convergence rate of the Chord method.
+
+To summarize, performing a linear change of variables on the Chord and Newton's methods has no impact upon the convergence rates of either methods. While there is a small possibility that performing a linear change of variables may improve the evaluation of the jacobian, it is likely that any performance gain would be offset by the cost of the matrix-vector multiplication required. Thus, it is not advisable to perform a linear change of variables. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Question 2}
-{\it Write a program that solves single nonlinear equations with Newton's method, the chord method, and the secant method. For the the secant method, use $x_{-1} = 0.99x_0$. Apply your program to the following function/initial iterate combinations, document and explain your results:\\(a)$ f(x) = 2x^2 - 5; x_0 = 10;$\\(b) $f(x) = sin(x) + x; x_0 = 0.5;$\\(c) $f(x) = cos(x); x_0 = 3$}\newline
+{\it Write a program that solves single nonlinear equations with Newton's method, the chord method, and the secant method. For the the secant method, use $x_{-1} = 0.99x_0$. Apply your program to the following function/initial iterate combinations, document and explain your results:\\
+(a)$ f(x) = 2x^2 - 5; x_0 = 10;$\\
+(b) $f(x) = sin(x) + x; x_0 = 0.5;$\\
+(c) $f(x) = cos(x); x_0 = 3$}\newline
 
 The Newton's method, the Chord Method, and the Secant Method were all programmed in Matlab and used as nonlinear solvers for functions a,b, and c using the initial conditions given. Each of these codes can be found in the attached documentation, or listed in Appendix A below. All three methods used the following stopping criteria:
 
@@ -134,16 +161,16 @@ For Function b, once again, all three methods converged to the same point, as se
 
 
 Newton's Method converges quadratically to $x$ and the error of the function is governed by the equation:
-$$||x_{n+1}-x^*||\le k||x_n-x^*||^2
+$$||\vec{x}_{n+1}-\vec{x}^*||\le k||\vec{x}_n-\vec{x}^*||^2
 $$
-where $x^*$ is the solution, k is a constant, and $x_n,\ x_{n+1}$ are the values of $x$ at steps $n$ and $n+1$. Since $x^*$ is the solution, $x_n-x^*$ can be written as:
-$$||e_{n+1}||\le k||e_{n}||^2\le(k||e_{n-1}||^2)^2\le\dots
+where $\vec{x}^*$ is the solution, k is a constant, and $\vec{x}_n,\ \vec{x}_{n+1}$ are the values of $\vec{x}$ at steps $n$ and $n+1$. Since $\vec{x}^*$ is the solution, $\vec{x}_n-\vec{x}^*$ can be written as:
+$$||\vec{e}_{n+1}||\le k||\vec{e}_{n}||^2\le(k||\vec{e}_{n-1}||^2)^2\le\dots
 $$
-We know from these equations and the problem statement that the Newton iteration converges quadratically and that the norm of the error is dependent upon the previous step's error. Thus, to get to $x_n$, the error has converged by $
-(k||x_0-x^*||^{2})^n=||e_n||$. The number of iterations necessary to get to the $\epsilon$ tolerance is:
-$$\frac{e_n}{e_0}=(k||x_0-x^*||^2)^{n-1}=\epsilon
+We know from these equations and the problem statement that the Newton iteration converges quadratically and that the norm of the error is dependent upon the previous step's error. Thus, to get to $\vec{x}_n$, the error has converged by $
+(k||\vec{x}_0-\vec{x}^*||^{2})^{n+1}=||\vec{e}_n||$. The number of iterations necessary to get to the $\epsilon$ tolerance is:
+$$\frac{||\vec{e}_n||}{||\vec{e}_0||}=(k||\vec{x}_0-\vec{x}^*||^2)^{n}=\epsilon
 $$
-$$n=\frac{log(\epsilon)}{log(k||e_0||^2)}+1
+$$n=\frac{log(\epsilon)}{log(k||\vec{e}_0||^2)}
 $$
 
 
@@ -158,15 +185,15 @@ J&=F'(\vec{x}) &\ \ N\ FLOPS\\
 F_x& =F(\vec{x}) & N^2\ FLOPS\\
 end\\
 \end{align*}
-The cost per iteration for Newton's method is highly dependent upon how $\vec{s}$ is solved. From Homework 1, we know that the Conjugate Gradient method requires $\approx$ \bigo($160N$) FLOPS to reduce the error of the solver by a factor of $10^{-3}$. This value will be used as a rough estimate for the remained of this problem. Thus, adding up all of the FLOPS, it requires \bigo($N^2$) FLOPS to set up the problem, and \bigo($N^2+162N$) FLOPS per $n$ iterations. To get to the $\epsilon$ accuracy, it would take \bigo($(\frac{log(\epsilon)}{log(k||e_0||^2)}+1)(N^2+162N)+N^2$) FLOPS.
+The cost per iteration for Newton's method is highly dependent upon how $\vec{s}$ is solved. From Homework 1, we know that the Conjugate Gradient method requires $\approx$ \bigo($160N$) FLOPS to reduce the error of the solver by a factor of $10^{-3}$. This value will be used as a rough estimate for the remained of this problem. Thus, adding up all of the FLOPS, it requires \bigo($N^2$) FLOPS to set up the problem, and \bigo($N^2+162N$) FLOPS per $n$ iterations. To get to the $\epsilon$ accuracy, it would take \bigo($(\frac{log(\epsilon)}{log(k||\vec{e}_0||^2)})(N^2+162N)+N^2$) FLOPS.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Question 4}
 {\it Answer the questions in the previous problem for the chord method.}\newline
 Much of the previous problem's analysis carries over for this problem. One of the main differences between the Chord method and Newton's method is the Chord method converges at a linear rate in the area local to the solution. Because of this, the error equation presented in Problem 3 above changes to:
-$$\frac{e_n}{e_0}=(k||x_0-x^*||)^{n-1}=\epsilon
+$$\frac{||\vec{e}_n||}{||\vec{e}_0||}=\frac{k||\vec{e}_0||||\vec{e}_n||}{k||\vec{e}_0||}=(||\vec{x}_0-\vec{x}^*||)^{n}=\epsilon
 $$
-$$n=\frac{log(\epsilon)}{log(k||e_0||)}+1
+$$n=\frac{log(\epsilon)}{log(k||\vec{e}_0||)}
 $$
 Because the Chord method is linear, the quadratic term in the  denominator changes into a linear term. Assuming that evaluating the function, $F(x)$ costs \bigo($N^2$) FLOPS and evaluating the Jacobian is only \bigo($N$) FLOPS, the number of of FLOPS required to get to an accuracy of $ \epsilon$ can be calculated. The breakdown of the FLOPS cost per step for the Chord method is given below:
 \begin{align*}
@@ -183,7 +210,7 @@ end\\
 \end{align*}
 Once again, the cost per iteration is dependent on how $\vec{s}$ is solved. Because the $L,U$ decomposition has been calculated prior to the start of the iteration section, the cost is only incurred once. While \bigo($\frac{N^3}{3}$) is the worst-case for decomposing the Jacobian, in reality, this value is dependent on the sparsity of the matrix. If the Jacobian is very sparse, the cost for decomposing it will be much smaller. Inside the iteration section, the $\vec{s}$ was solved using forward and backward substitution, but they could be easily calculated using two sequential Conjugate Gradient calls. 
 
-The total cost of using the Chord method with Cholesky factorization of the Jacobian and Forward/Backward substitution is \bigo$((\frac{N^3}{3} +N^2 +2N)+(\frac{log(\epsilon)}{log(k||e_0||)}+1)(3N^2+N))$ FLOPS. This method, compared to Newton's method, has the potential for costing significantly more FLOPS to converge to a solution. However, if the Jacobian is extremely costly to evaluate, the Chord method has the advantage of only evaluating it once. 
+The total cost of using the Chord method with Cholesky factorization of the Jacobian and Forward/Backward substitution is \bigo$((\frac{N^3}{3} +N^2 +2N)+(\frac{log(\epsilon)}{log(k||\vec{e}_0||)})(3N^2+N))$ FLOPS. This method, compared to Newton's method, has the potential for costing significantly more FLOPS to converge to a solution. However, if the Jacobian is extremely costly to evaluate, the Chord method has the advantage of only evaluating it once. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section*{Question 5}
 %{\it Discreteize the following differential equation:
