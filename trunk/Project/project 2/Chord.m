@@ -1,4 +1,4 @@
-function [x, numIts ] = Chord( fhandle, x0,atol, rtol,maxIt)
+function [x, numIts ,stopCheck] = Chord( fhandle, x0,atol, rtol,maxIt)
 %CHORD The Chord method for non linear systems of equations
 %%This method takes in the function handle to the system that needs to be
 %%solved, the inital x value, and the tolerance.
@@ -6,17 +6,15 @@ function [x, numIts ] = Chord( fhandle, x0,atol, rtol,maxIt)
 r0=norm(fhandle(x0),inf);
 x=x0;
 fx=fhandle(x0);
-numIts=0;
-h=1e-5;
+numIts=1;
 
-    for i=1:length(x)
-        jacobian(i)=imag(fhandle(x+h*1i))/h;
-    end
-    [l,u]=lu(jacobian);
+    Jac=diffjac(x,fhandle,fx);
+    [l,u]=lu(Jac);
     
-
-while norm(fx,inf)>rtol*r0+atol && numIts<maxIt
-    numIts=numIts+1;
+stopVals=rtol*r0+atol;
+stopCheck=r0;
+while stopCheck(numIts)>stopVals && numIts<maxIt
+   
     
     if(mod(numIts,10000)==0)
         fprintf('%s %d\n','Chord Method: Max number of iterations:',numIts);
@@ -26,11 +24,12 @@ while norm(fx,inf)>rtol*r0+atol && numIts<maxIt
     %% Solve for s. Since this is a 1-d problem, we can just devide by df.
     %if this was a multi-dimensional matrix, we would need to use a linear
     %solver to find s. 
-    y=-fx/l;
-    s=y/u;
-    x=x+s;
+        [y,count1]=SOR(l,-fx,10^-6,1.1);
+        [s,count2]=SOR(u,y,10^-6,.95);
+        x=x+s;
     fx=fhandle(x);
-    
+     numIts=numIts+1;
+    stopCheck(numIts)=norm(fx,inf);
     
 end
 

@@ -1,4 +1,4 @@
-function [ x, numIts  ] = FixedPoint( fhandle, x0,atol, rtol)
+function [ x, numIts,stopCheck ] = FixedPoint( fhandle, x0,atol, rtol,maxIt)
 %FixedPoint Fixed-point iteration for non linear systems of equations
 %%This method takes in the function handle to the system that needs to be
 %%solved, the inital x value, and the tolerance.
@@ -8,28 +8,21 @@ function [ x, numIts  ] = FixedPoint( fhandle, x0,atol, rtol)
 r0=norm(fhandle(x0),inf);
 x=x0;
 fx=fhandle(x0);
-numIts=0;
-h=1e-5;
+numIts=1;
 
-while norm(fx,inf)>rtol*r0+atol
-    numIts=numIts+1;
-    df=imag(fhandle(x+h*1i))/h;
+
+stopVals=rtol*r0+atol;
+stopCheck=r0;
+
+while stopCheck(numIts)>stopVals && numIts<maxIt
     
-    %% Remove this for final runtime calcs!
-%     df2=(fhandle(x+h)-fx)/h;
-%     dabs=abs(df-df2);
-%     if(dabs>.001)
-%         disp('ERROR WITH THE IMAGINARY STEP!!!');
-%     end
+    x=x-fx;
     
-    %% Solve for s. Since this is a 1-d problem, we can just devide by df.
-    %if this was a multi-dimensional matrix, we would need to use a linear
-    %solver to find s. 
-    
-    s=-fx/df;
-    x=x+s;
     fx=fhandle(x);
     
+        numIts=numIts+1;
+    stopCheck(numIts)=norm(fx,inf);
+
     
 end
 
