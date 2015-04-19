@@ -54,20 +54,35 @@ $$
 By inducing a contraction mapping, given by $ \vec{x}=k(\vec{x})$, the method will converge, so long as the following conditions are met:
 $$||k(\vec{x})-k(\vec{y})||\le \gamma ||\vec{x}-\vec{y}|| \ \ \ \ 0<\gamma<1
 $$
-where $k(\vec{x})=\vec{x}_{n+1}$, $k(\vec{y}),\vec{y}=\vec{x}^*$ and $\gamma$ is a constant.  The Fixed-point method may not converge as quickly as other methods, but it is a relatively straight forward method and does not need to calculate a Jacobian matrix to converge. This can be a huge advantage over the Newton's family of methods, should finding the Jacobian prove to be difficult or costly. The 
+where $k(\vec{x})=\vec{x}_{n+1}$, $k(\vec{y}),\vec{y}=\vec{x}^*$ and $\gamma$ is a constant.  The Fixed-point method may not converge as quickly as other methods, but it is a relatively straight forward method and does not need to calculate a Jacobian matrix to converge. This can be a huge advantage over the Newton's family of methods, should finding the Jacobian prove to be difficult or costly.
 
 \subsection*{Newton Method}
 Newton's method is a numerical method that iteratively finds successively better approximations to the zeros of a real function. The Newton iteration is defined as:
 $$\vec{x}_{n+1}=\vec{x}_n-\frac{F(\vec{x}_n)}{F'(\vec{x}_n)}
 $$
-where $F(\vec{x})$ is the value of the function $F$ at $\vec{x}$ and  $F'(\vec{x})$ is the derivative of $F(\vec{x})$. 
+where $F(\vec{x})$ is the value of the function $F$ at $\vec{x}$ and  $F'(\vec{x})$ is the derivative of $F(\vec{x})$. Newton's method has an advantage over the Fixed point method when looking at the convergence rate. While the Fixed point method is expected to converge at a linear rate, Newton's method is able to converge quadratically. The convergence rate is governed by:
+$$||\vec{x}_{n+1}-\vec{x}^*||\le k||\vec{x}_n-\vec{x}^*||^2
+$$
+where $\vec{x}^*$ is the solution and k is a constant governed by $0<k<1$. As can be seen by the squared term on the right hand side, the error should be decreasing at a quadratic rate. One issue with Newton's method is solving the step $F'(\vec{x}_n)\vec{s}=-F(\vec{x}_n)$. This step requires not only solving a linear system of equations, but also requires the formation of the Jacobian at each step. If the Jacobian is costly to evaluate, this method may take more time to converge, while still having fewer iterations, than other methods. 
+
+
 \subsection*{Chord Method}
-The chord 
-
-
+The Chord method is a variation on Newton's method that attempts to minimize the cost of evaluating the Jacobian. The  iterative step used in the Chord method is nearly identical to that of Newton's method, but has one small change:
+$$\vec{x}_{n+1}=\vec{x}_n-\frac{F(\vec{x}_n)}{F'(\vec{x}_0)}
+$$
+Instead of using a Jacobian calculated at each step, the Jacobian is calculated at the start and the LU factorized version of this initial Jacobian is used for the rest of the iterations:
+$$LU\vec{s}=-F(\vec{x}_n)
+$$
+By only having to calculate the Jacobian once and only factoring it once, the Chord method is able to speed up the computation at the cost of more iterations. The Chord method gives up the quadratic convergence of Newton's method to achieve speedups in computation. The error of the Chord method is governed by:
+$$||\vec{x}_{n+1}-\vec{x}^*||\le k||\vec{e}_0||\ ||\vec{e}_n||
+$$
+where $||\vec{e}_0||$ is the norm of the initial error, given by $||\vec{e}_0||=||\vec{x}_0-\vec{x}^*||$, and $||\vec{e}_n||$ is the norm of the error at step n. From the above equation we know that the error converges at a locally linear rate.
 
 \subsection*{Shamanskii Method with $m=2$}
-
+The Shamanskii method attempts to hybridize the Chord method with Newton's method. The Shamanskii method uses the parameter $m$ to determine how many chord iterations will be performed prior to recomputing and refactorizing the Jacobian. This allows the Shamanskii method to maintain a higher order convergence while still minimizing the number of times the Jacobian is computed. The error of the Shamanskii method is governed by:
+$$||\vec{e}_{n+1}||\le k_s||\vec{e}_n||^{m+1}
+$$
+where $||\vec{e}_n||=||\vec{x}_n-\vec{x}^*||$, and $k_s$ is a constant.
 \subsection*{Results}
 
 %
@@ -79,19 +94,17 @@ The chord
 \begin{center}
 \begin{tabular}{ | c|c|c| c|}
 \hline
-  n & Serial (sec) & Parallel For(sec) & DST (sec)\ \\\hline
-  258 &0.0194 & 0.0494& 0.5190 \\\hline
-  514 &0.0111 & 0.0564 & 0.0196\\\hline
-  1026 &0.0423 & 0.0771 & 0.0706\\\hline
-  2050 &0.1704 & 0.1439 & 0.2003 \\\hline
-  4098 &0.5087 & 0.4694 &1.1024 \\\hline
-  8194 &8.1068 & 1.9299 & 3.9583\\\hline
-  16386 &37.3268 & 7.9876 & 29.3784\\\hline
+Numerical Method  &Iterations Required to converge & Time to Converge & Final Error \\\hline
+Fixed Point&19& 0.037566& 8.526859e-07\\\hline 
+Chord&13& 0.401574& 7.749982e-07\\\hline 
+Shamanskii's Method&9& 1.51895776& 1.248676e-06\\\hline 
+Newton's Method&9& 3.03898413& 3.506771e-07\\\hline
+
   % Design2 &300 & 380 & 370 & 34 & 40& 400& 100& 50& 100& 100 \\\hline
 %  Design3 &300 & 600 & 580 & 40 & 50& 550& 100& 150& 200& 250 \\\hline
 
 \end{tabular}
-\caption{Runtime for generating the $S$ }
+\caption{Final Results of the 4 methods }
 \label{parfor}
 \end{center}
 \end{figure}
@@ -100,33 +113,18 @@ The chord
  
  \FloatBarrier
  
- 
-The second symmetric Toeplitz system is defined by:
 
-$$ a_k=\frac{1}{2\pi}\int\limits^\pi_{-\pi}f(\theta)e^{-ik\theta}d\theta,\ \ \ \ \ k=0,\pm 1, \pm2, \dots,
-$$
-where $f(\theta)=\theta^4 +1$ for $-\pi\le\theta\le\pi$. This means that $a_k$ is the Fourier coefficients of $f(\theta)$ and were computed via FFT. For the second system, the PCG and CG method were each run for the 6 different values of $n$ only. Once again, the CG method was compared to the PCG method with Chan's preconditioner and Strang's preconditioner. 
-For this new $A$ matrix based upon the Fourier coefficients of $f(\theta)$. These coefficients were generated by first creating an array of $f(\theta)$ values, and then performing a FFT on the values. The result was an array of complex values that were then used to generate the $A$ matrix. Once the $A$ matrix had been formed, Chan and Strang's circulant matrices were generated. In order to achieve fast convergence rates, the A matrix was preconditioned with each of these circulant matrices. The final preconditioned matrix passed to the PCG method was $C_nAC_n'$ and the matrix used in the PCG calculation was $(C_nAC_n')^{-1}$. Figures \ref{pcgB1} and \ref{pcgB2} show the final runtimes and number of iterations used by each method. 
 
  
  \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=120mm]{pcsb.png}
-\caption{The final runtimes of the CG iterative method and the PCG iterative method with a Strang circulant preconditioner.}
+\includegraphics[width=160mm]{converge.png}
+\caption{The error of each method at a given iteration}
 \label{pcgB1}
 \end{center}
 \end{figure}
- As can be seen in Figures \ref{pcgB1} and \ref{pcgB2}, the PCG method greatly outpaces the CG method in both runtime and number of iterations required to converge. However, once again the Chan and Strang circulant preconditioners are roughly equivalent. Both methods are able to converge within one iteration and both methods are able to handle the large matrices without issue. A brief analysis of the runtimes show that the $\approx$ \bigo($n\,log\,n$) growth rate discussed above is maintained with the second symmetric Toeplitz system analyzed here. 
- 
- 
-\begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=120mm]{pccb.png}
-\caption{The final runtimes of the CG iterative method and the PCG iterative method with a Chan circulant preconditioner.}
-\label{pcgB2}
-\end{center}
-\end{figure}
- 
+
+  
 
 %\begin{figure}[htbp]
 %\begin{center}
