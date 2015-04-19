@@ -30,21 +30,21 @@ shend=toc(shstart);
 %% Ploting section figure 1
 figure;
 
-semilogy(1:Fcount,Ferr,'r--*','DisplayName','Fixed Point Error')
+semilogy(0:Fcount-1,Ferr,'r--*','DisplayName','Fixed Point Error')
 hold on; 
-semilogy(1:Ccount,Cerr,'c--^','DisplayName','Chord Method Error');
-semilogy(1:Ncount,Nerr,'b--d','DisplayName','Newton''s Method Error');
-semilogy(1:Shcount,Sherr,'k--*','DisplayName','Shamanskii''s Method Error');
+semilogy(0:Ccount-1,Cerr,'c--^','DisplayName','Chord Method Error');
+semilogy(0:Ncount-1,Nerr,'b--d','DisplayName','Newton''s Method Error');
+semilogy(0:Shcount-1,Sherr,'k--*','DisplayName','Shamanskii''s Method Error');
 
 
 % Create ylabel
-ylabel({'Relative error of the function'},'FontSize',20,'Interpreter','latex');
+ylabel({'Relative error of the Chandrasekhar H-equation '},'FontSize',20,'Interpreter','latex');
 
 % Create xlabel
-xlabel({'Iteration number'},'FontSize',20,'Interpreter','latex');
+xlabel({'Iteration Number'},'FontSize',20,'Interpreter','latex');
 
 % Create title
-title({'Error of each Numerical Method at each iteration'},'FontSize',20,...
+title({'Error of Each Numerical Method at Each Iteration'},'FontSize',20,...
     'Interpreter','latex');
 
 % Create legend
@@ -57,9 +57,9 @@ hold off;
 
 %% Latex out
 fprintf('function  &Iterations Required to converge & Time to Converge & Final Error %s\n','\\\hline')
-fprintf('Fixed Point&%d& %f& %d%s \n',Fcount,fend,Ferr(end),'\\\hline')
-fprintf('Chord&%d& %f& %d%s \n',Ccount,cend,Cerr(end),'\\\hline')
-fprintf('Newton''s Method&%d& %.8f& %d%s\n',Ncount,nend,Nerr(end),'\\\hline')
-fprintf('Shamanskii''s Method&%d& %.8f& %d%s \n',Shcount,shend,Sherr(end),'\\\hline')
+fprintf('Fixed Point&%d& %f& %d%s \n',Fcount-1,fend,Ferr(end),'\\\hline')
+fprintf('Chord&%d& %f& %d%s \n',Ccount-1,cend,Cerr(end),'\\\hline')
+fprintf('Newton''s Method&%d& %.8f& %d%s\n',Ncount-1,nend,Nerr(end),'\\\hline')
+fprintf('Shamanskii''s Method&%d& %.8f& %d%s \n',Shcount-1,shend,Sherr(end),'\\\hline')
 fprintf('\n');
 

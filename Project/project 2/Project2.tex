@@ -34,7 +34,7 @@
 
 $$F_i(\vec{x})=x_i -(1-\frac{c}{2N}\sum\limits^N_{j=1}\frac{\mu_ix_j}{\mu_i+\mu_j})^{-1}=0
 $$
-where $c \in(0,1)$ is a given constant, $\mu_i=\frac{(i-\frac{1}){2}}{N}$ for $1\le i \le N$ and $N$ is the dimension of the unknown vector $\vec{x}$. Write your own code and compute the solution of the equation for $N=200$ and $c=0.9$ by using:
+where $c \in(0,1)$ is a given constant, $\mu_i=\frac{(i-\frac{1}{2})}{N}$ for $1\le i \le N$ and $N$ is the dimension of the unknown vector $\vec{x}$. Write your own code and compute the solution of the equation for $N=200$ and $c=0.9$ by using:
 \begin{enumerate}
 \item Fixed-point method,
 \item Chord method,
@@ -79,26 +79,47 @@ $$
 where $||\vec{e}_0||$ is the norm of the initial error, given by $||\vec{e}_0||=||\vec{x}_0-\vec{x}^*||$, and $||\vec{e}_n||$ is the norm of the error at step n. From the above equation we know that the error converges at a locally linear rate.
 
 \subsection*{Shamanskii Method with $m=2$}
-The Shamanskii method attempts to hybridize the Chord method with Newton's method. The Shamanskii method uses the parameter $m$ to determine how many chord iterations will be performed prior to recomputing and refactorizing the Jacobian. This allows the Shamanskii method to maintain a higher order convergence while still minimizing the number of times the Jacobian is computed. The error of the Shamanskii method is governed by:
+The Shamanskii method attempts to hybridize the Chord method with Newton's method. The Shamanskii method uses the parameter $m$ to determine how many chord iterations will be performed prior to recomputing and refactorizing the Jacobian. This allows the Shamanskii method to maintain a higher order convergence while still minimizing the number of times the Jacobian is computed. If $m=1$, the Shamanskii method becomes Newton's method and converges at the same rate. The error of the Shamanskii method is governed by:
 $$||\vec{e}_{n+1}||\le k_s||\vec{e}_n||^{m+1}
 $$
-where $||\vec{e}_n||=||\vec{x}_n-\vec{x}^*||$, and $k_s$ is a constant.
+where $||\vec{e}_n||=||\vec{x}_n-\vec{x}^*||$, and $k_s$ is a constant. From the above equation, we know that the Shamanskii method will converge at a higher order rate, assuming the standard assumptions hold.
+
 \subsection*{Results}
 
-%
-%The one-dimensional equation given above can be solved with numeral method analysis or directly as a function of x. The solved equation then can be used to check the validity of the numerical methods. When solved directly, the equation becomes:
-%$$u(x) = -0.333333 x^3+0.25 x^2-1.91667 x+1
-%$$
+The four numerical methods described above were used to solve the discrete Chandrasekhar H-equation given by:
+$$F_i(\vec{x})=x_i -(1-\frac{c}{2N}\sum\limits^N_{j=1}\frac{\mu_ix_j}{\mu_i+\mu_j})^{-1}=0
+$$
+where $c \in(0,1)$ is a given constant, $\mu_i=\frac{(i-\frac{1}{2})}{N}$ for $1\le i \le N$ and $N$ is the dimension of the unknown vector $\vec{x}$. Initially, the $\vec{x}_0$ was set to $[1,1,\dots,1]^T$.  To determine the most effective solver for this problem, the following two metrics were considered:
+\begin{enumerate}
+\item Number of iterations required to converge
+\item Time to converge (Cost of the method)
+\end{enumerate}
+ 
+Once all four methods were run, the relative error at each iteration was plotted, as seen in Figure \ref{c}, to graphically illustrate the convergence rate. The Fixed point and Chord methods can be seen to have linear convergence rates and require far more iterations to converge than the Newton or Shamanskii methods. The Newton and Shamanskii methods both seem to converge at a quadratic rate, with the Shamanskii method having a slightly slower rate. The rate of convergence for the Shamanskii method was somewhat surprising as it was expected to converge at a cubic rate. Instead, this method converged slightly slower than the quadratic Newton's method. Regardless, both the Shamanskii and Newton's method were able to converge in 8 iterations.
+ 
+ \begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=120mm]{converge.png}
+\caption{The error of each method at a given iteration}
+\label{c}
+\end{center}
+\end{figure}
+ \FloatBarrier
+
+While both metrics are important to consider when evaluating a numerical method, the runtime of the method is generally considered more important.  
+
+
+
 
 \begin{figure}[htbp]
 \begin{center}
 \begin{tabular}{ | c|c|c| c|}
 \hline
 Numerical Method  &Iterations Required to converge & Time to Converge & Final Error \\\hline
-Fixed Point&19& 0.037566& 8.526859e-07\\\hline 
-Chord&13& 0.401574& 7.749982e-07\\\hline 
-Shamanskii's Method&9& 1.51895776& 1.248676e-06\\\hline 
-Newton's Method&9& 3.03898413& 3.506771e-07\\\hline
+Fixed Point&18& 0.037566& 8.526859e-07\\\hline 
+Chord&12& 0.401574& 7.749982e-07\\\hline 
+Shamanskii's Method&8& 1.51895776& 1.248676e-06\\\hline 
+Newton's Method&8& 3.03898413& 3.506771e-07\\\hline
 
   % Design2 &300 & 380 & 370 & 34 & 40& 400& 100& 50& 100& 100 \\\hline
 %  Design3 &300 & 600 & 580 & 40 & 50& 550& 100& 150& 200& 250 \\\hline
@@ -110,19 +131,7 @@ Newton's Method&9& 3.03898413& 3.506771e-07\\\hline
 \end{figure}
 
 
- 
- \FloatBarrier
- 
 
-
- 
- \begin{figure}[htbp]
-\begin{center}
-\includegraphics[width=160mm]{converge.png}
-\caption{The error of each method at a given iteration}
-\label{pcgB1}
-\end{center}
-\end{figure}
 
   
 
