@@ -97,13 +97,13 @@ where $c \in(0,1)$ is a given constant, $\mu_i=\frac{(i-\frac{1}{2})}{N}$ for $1
  
 Once all four methods were run, the relative error at each iteration was plotted, as seen in Figure \ref{c}, to graphically illustrate the convergence rate. The Fixed point and Chord methods can be seen to have linear convergence rates and require far more iterations to converge than the Newton or Shamanskii methods. The Newton and Shamanskii methods both seem to converge at a quadratic rate, with the Shamanskii method having a slightly slower rate. The rate of convergence for the Shamanskii method was somewhat surprising as it was expected to converge at a cubic rate. Instead, this method converged slightly slower than the quadratic Newton's method. Regardless, both the Shamanskii and Newton's method were able to converge in 8 iterations.
  
- While both metrics are important to consider when evaluating a numerical method, the runtime of the method is generally considered more important.  Figure \ref{tab} gives not only the number of iterations required to converge, but the runtime of each method. The Final Error column shows the final error of each method. The stopping condition, given in the problem statement, evaluates to $\approx 1.453*10^{-6}$. Once a method's relative error is below this point, it is able to stop executing.
+ While both metrics are important to consider when evaluating a numerical method, the runtime of the method is generally considered more important.  Figure \ref{tab} gives not only the number of iterations required to converge, but the runtime of each method. The Average Time per Iteration column gives a rough breakdown on the cost per iteration and is defined as $\frac{Time\ to\ converge}{Iterations\ to\ converge}$. While this is not completely accurate for the Chord and Shamanskii methods, it is nevertheless a useful metric to gain insight on the relative runtimes of the methods. The Final Error column shows the final error of each method. The stopping condition, given in the problem statement, evaluates to $\approx 1.453*10^{-6}$. Once a method's relative error is below this point, it is able to stop executing.
  
- While the Shamanskii and Newton's methods both converge in the fewest number of iterations, Newton's method actually takes $\approx$ 100 times longer to run than the Fixed Point method. Creating and evaluating the Jacobian is a costly step for this equation. It takes the \mcode{diffjac} code $\approx 0.375s$ to evaluate, thus contributing the most to the runtimes of the codes. Since the Fixed Point method does not rely on the Jacobian for its convergence, it is able to run significantly faster. The Chord method is the second fastest method as it only requires evaluating the Jacobian once. Comparing the cost of evaluating the Jacobian to the runtime of the Chord method reveals that the Jacobian is the primary driver of the runtime. Once evaluated, the chord method was able to run with approximately the same speed as the Fixed Point method. 
+ While the Shamanskii and Newton's methods both converge in the fewest number of iterations, Newton's method actually takes $\approx$ 100 times longer to run than the Fixed Point method. Creating and evaluating the Jacobian is a costly step for this equation. It takes the \mcode{diffjac} code $\approx 0.375\ sec$ to evaluate, thus contributing the most to the runtimes of the codes. Since the Fixed Point method does not rely on the Jacobian for its convergence, it is able to run significantly faster. The Chord method is the second fastest method as it only requires evaluating the Jacobian once. Comparing the cost of evaluating the Jacobian to the runtime of the Chord method reveals that the Jacobian is the primary driver of the runtime. Once evaluated, the chord method was able to run with approximately the same speed as the Fixed Point method. 
  
  \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=120mm]{converge.png}
+\includegraphics[width=140mm]{converge.png}
 \caption{The error of each method at a given iteration}
 \label{c}
 \end{center}
@@ -112,14 +112,14 @@ Once all four methods were run, the relative error at each iteration was plotted
 
 \begin{figure}[htbp]
 \begin{center}
-\begin{tabular}{ | c|c|c| c|}
+\begin{tabular}{ | c|c|c|c| c|}
 \hline
-Numerical Method  &Iterations Required to Converge & Time to Converge & Final Error \\\hline
-Fixed Point&18& 0.037566& $8.526859*10^{-7}$\\\hline 
-Chord&12& 0.401574& $7.749982*10^{-7}$\\\hline 
-Shamanskii's Method&8& 1.51895776& $1.248676*10^{-6}$\\\hline 
-Newton's Method&8& 3.03898413&$ 3.506771*10^{-7}$\\\hline
 
+Function  &\multicolumn{1}{|p{3cm}|}{\centering Iterations to  \\ Converge} & \multicolumn{1}{|p{3cm}|}{\centering Time to  \\ Converge} & \multicolumn{1}{p{3cm}|}{\centering Average Time \\ per Iteration} &Final Error\\\hline
+Fixed Point&18& 0.038847&0.002158& $8.526859*10^{-7}$\\\hline 
+Chord&12& 0.397551& $0.03312923$&$7.749982*10^{-7}$\\\hline 
+Shamanskii's Method&8& 1.50136418&0.1876705&$ 1.248676*10^{-6}$\\\hline 
+Newton's Method&8& 2.97823875&0.3722798 &$3.506771*10^{-7}$\\\hline
   % Design2 &300 & 380 & 370 & 34 & 40& 400& 100& 50& 100& 100 \\\hline
 %  Design3 &300 & 600 & 580 & 40 & 50& 550& 100& 150& 200& 250 \\\hline
 
@@ -131,32 +131,8 @@ Newton's Method&8& 3.03898413&$ 3.506771*10^{-7}$\\\hline
 
 
 
-\subsection*{Conclusions}
-  
-
-%\begin{figure}[htbp]
-%\begin{center}
-%\begin{tabular}{ | l | c|c| c| c | c | c| c| c| c  | c | }
-%\hline
-%  &A & B & C &D &E&F&G&H&I&J\ \\\hline
-%  Design1 &240 & 350 & 305 & 30 & 35& 400& 90& 0& 30& 300 \\\hline
-%% Design2 &300 & 380 & 370 & 34 & 40& 400& 100& 50& 100& 100 \\\hline
-%%  Design3 &300 & 600 & 580 & 40 & 50& 550& 100& 150& 200& 250 \\\hline
-%
-%\end{tabular}
-%\caption{Design 1 Parameters}
-%\end{center}
-%\end{figure}
-%
-%The isometric view of this design can be seen in Figure \ref{d1i}. The large cylinder was plotted using multiple instances of the \mcode{surf} command on two cylinders. Figure \ref{d1y} and Figure \ref{d1z} show the printer design in the X-Y and X-Z plains, respectively.
-%
-%\begin{figure}[htbp]
-%\begin{center}
-%\includegraphics[width=160mm]{d1iso.png}
-%\caption{An isometric view of Design 1}
-%\label{d1i}
-%\end{center}
-%\end{figure}
+\subsection*{Conclusion}
+ All four methods evaluated were able to converge upon the same solution in a relatively fast manner. To properly evaluate the effectiveness of each method, the number of iterations required to converge and the overall runtime were compared and considered. As a result of this comparison, it was determined that the Fixed Point method, using contraction mapping, was the most effective method. Creating and factoring the Jacobian of the Chandrasekhar H-equation proved to be too costly for the Newton, Chord and Shamanskii methods. This project effectively showed that a that method converges in the fewest number of iterations is not necessarily the best method to be employed.  
 
 
 

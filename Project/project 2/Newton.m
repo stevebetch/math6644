@@ -13,9 +13,9 @@ stopVals=rtol*r0+atol;
 stopCheck=r0;
 
 while stopCheck(numIts)>stopVals && numIts<maxIt
-   tic
+   
     Jac=diffjac(x,fhandle,fx);
-   toc 
+    
 %% Solve for s. Since this is multi-dimensional matrix,
     %we need to use a linear solver to find s. 
     

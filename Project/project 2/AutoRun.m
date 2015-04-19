@@ -56,10 +56,10 @@ hold off;
 
 
 %% Latex out
-fprintf('function  &Iterations Required to converge & Time to Converge & Final Error %s\n','\\\hline')
-fprintf('Fixed Point&%d& %f& %d%s \n',Fcount-1,fend,Ferr(end),'\\\hline')
-fprintf('Chord&%d& %f& %d%s \n',Ccount-1,cend,Cerr(end),'\\\hline')
-fprintf('Newton''s Method&%d& %.8f& %d%s\n',Ncount-1,nend,Nerr(end),'\\\hline')
-fprintf('Shamanskii''s Method&%d& %.8f& %d%s \n',Shcount-1,shend,Sherr(end),'\\\hline')
+fprintf('function  &Iterations Required to converge & Time to Converge & Time per Iteration &Final Error%s\n','\\\hline')
+fprintf('Fixed Point&%d& %f&%f& %d%s \n',Fcount-1,fend,fend/(Fcount-1),Ferr(end),'\\\hline')
+fprintf('Chord&%d& %f& %d&%d%s \n',Ccount-1,cend,cend/(Ccount-1),Cerr(end),'\\\hline')
+fprintf('Newton''s Method&%d& %.8f&%d &%d%s\n',Ncount-1,nend,nend/(Ncount-1),Nerr(end),'\\\hline')
+fprintf('Shamanskii''s Method&%d& %.8f&%d& %d%s \n',Shcount-1,shend,shend/(Shcount-1),Sherr(end),'\\\hline')
 fprintf('\n');
 
