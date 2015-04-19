@@ -56,7 +56,7 @@ hold off;
 
 
 %% Latex out
-fprintf('function  &Iterations Required to converge & Time to Converge & Time per Iteration &Final Error%s\n','\\\hline')
+fprintf('Function  &Iterations Required to converge & Time to Converge & Time per Iteration &Final Error%s\n','\\\hline')
 fprintf('Fixed Point&%d& %f&%f& %d%s \n',Fcount-1,fend,fend/(Fcount-1),Ferr(end),'\\\hline')
 fprintf('Chord&%d& %f& %d&%d%s \n',Ccount-1,cend,cend/(Ccount-1),Cerr(end),'\\\hline')
 fprintf('Newton''s Method&%d& %.8f&%d &%d%s\n',Ncount-1,nend,nend/(Ncount-1),Nerr(end),'\\\hline')
